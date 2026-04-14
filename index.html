@@ -196,7 +196,7 @@
             border-radius: 0.5rem;
             overflow: hidden;
             transition: all 0.3s ease;
-            animation: slideUp 0.6s ease-out backwards;
+            animation: slideUp 0.6s ease-out forwards;
             opacity: 0;
         }
 
@@ -1227,8 +1227,10 @@
         function init() {
             // Render projects
             const grid = document.getElementById('projectsGrid');
-            PROJECTS.forEach(project => {
-                grid.appendChild(renderProjectCard(project));
+            PROJECTS.forEach((project, index) => {
+                const card = renderProjectCard(project);
+                card.style.animationDelay = `${0.1 + index * 0.1}s`;
+                grid.appendChild(card);
             });
 
             // Render activity log
