@@ -42,6 +42,20 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    /* WEATHER BAR */
+    .weather-bar {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: var(--text2);
+    }
+    .weather-city { font-weight: 600; color: var(--text); }
+    .weather-sep { color: var(--text3); }
+
     /* HEADER */
     header {
       position: sticky; top: 0; z-index: 100;
@@ -219,6 +233,22 @@
 </head>
 <body>
 
+<!-- WEATHER -->
+<div class="weather-bar">
+  <span>🌤️</span>
+  <span class="weather-city">Las Vegas</span>
+  <span class="weather-sep">·</span>
+  <span id="weatherTemp">61°F</span>
+  <span class="weather-sep">·</span>
+  <span id="weatherDesc">Partly Cloudy</span>
+  <span class="weather-sep">·</span>
+  <span>Feels like <span id="weatherFeels">61°F</span></span>
+  <span class="weather-sep">·</span>
+  <span>💨 <span id="weatherWind">12 mph</span></span>
+  <span class="weather-sep">·</span>
+  <span>💧 <span id="weatherHumidity">31%</span></span>
+</div>
+
 <header>
   <div class="header-left">
     <div class="logo-dot"></div>
@@ -273,12 +303,28 @@
         <div class="panel-title">API Usage & Cost</div>
 
         <div class="api-section">
-          <div class="api-section-title">This Month</div>
+          <div class="api-section-title">April 2026 — All AI Spend</div>
           <div class="cost-hero">
-            <span class="cost-amount" id="monthlyCost">$1.23</span>
-            <span class="cost-period">/ April 2026</span>
+            <span class="cost-amount">$353</span>
+            <span class="cost-period">/ mo</span>
           </div>
-          <div class="cost-sub">Today: <span id="todayCost">$0.08</span> &nbsp;·&nbsp; Auto-recharge: <span>$10 @ $5 threshold</span></div>
+          <div class="cost-sub">From Gmail receipts &nbsp;·&nbsp; <span style="color:#ff453a;font-weight:600">↑ Watch this</span></div>
+        </div>
+
+        <div class="api-section">
+          <div class="api-section-title">Breakdown by Service</div>
+          <div class="model-rows">
+            <div class="model-row">
+              <span class="model-name">Anthropic API</span>
+              <div class="model-bar-track"><div class="model-bar-fill" style="width:99%;background:#bf5af2"></div></div>
+              <span class="model-pct" style="font-size:11px;min-width:48px">$348.38</span>
+            </div>
+            <div class="model-row">
+              <span class="model-name">ElevenLabs</span>
+              <div class="model-bar-track"><div class="model-bar-fill" style="width:2%;background:#ff9500"></div></div>
+              <span class="model-pct" style="font-size:11px;min-width:48px">$5.00</span>
+            </div>
+          </div>
         </div>
 
         <div class="api-section">
@@ -287,7 +333,7 @@
         </div>
 
         <div class="api-recharge">
-          ⚡ Last recharge: Apr 13 — $10.49 &nbsp;·&nbsp; Watch usage closely
+          ⚡ 17 Anthropic receipts Apr 6–13 &nbsp;·&nbsp; Largest: $119.05 (Apr 12)
         </div>
       </div>
 
@@ -501,6 +547,20 @@ renderActivity();
 renderStatus();
 renderModels();
 setLastUpdated();
+
+// Fetch live Vegas weather
+fetch('https://wttr.in/Las+Vegas?format=j1')
+  .then(r => r.json())
+  .then(d => {
+    const c = d.current_condition[0];
+    document.getElementById('weatherTemp').textContent    = c.temp_F + '\u00b0F';
+    document.getElementById('weatherDesc').textContent    = c.weatherDesc[0].value;
+    document.getElementById('weatherFeels').textContent   = c.FeelsLikeF + '\u00b0F';
+    document.getElementById('weatherWind').textContent    = c.windspeedMiles + ' mph';
+    document.getElementById('weatherHumidity').textContent = c.humidity + '%';
+  })
+  .catch(() => {});
+
 </script>
 </body>
 </html>
