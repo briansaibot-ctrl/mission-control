@@ -932,10 +932,10 @@
           fetch('data/weather.json').then(r => r.json()).catch(() => null)
         ]);
 
-        data.alerts = alerts || [];
+        data.alerts = (alerts && alerts.alerts) ? alerts.alerts : (Array.isArray(alerts) ? alerts : []);
         data.spending = spending;
         data.system = system;
-        data.activity = activity || [];
+        data.activity = (activity && activity.items) ? activity.items : (Array.isArray(activity) ? activity : []);
         data.weather = weather;
 
         updateUI();
@@ -964,7 +964,7 @@
       if (data.weather) {
         const icon = getWeatherIcon(data.weather.condition || '', now.getHours());
         document.getElementById('weatherIcon').textContent = icon;
-        document.getElementById('weatherTemp').textContent = `${data.weather.temp}°F`;
+        document.getElementById('weatherTemp').textContent = `${data.weather.temp_f}°F`;
       }
 
       // Shift

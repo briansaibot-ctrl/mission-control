@@ -1,19 +1,15 @@
 {
-  "updated": "2026-04-13T19:13:00-07:00",
+  "updated": "2026-04-13T19:21:00-07:00",
   "month": "April 2026",
-  "liv_revenue": {
-    "monthly": 3082138,
-    "nightly_avg": 154107,
-    "top_night": 450000,
-    "top_night_date": "2025-04-05",
-    "guests_this_month": 0
-  },
+  "monthly_revenue": 3082138,
+  "top_night": 450000,
+  "top_night_date": "2025-04-05",
   "ops_cost": {
-    "total_cents": 2089,
+    "total": 20.89,
     "items": [
-      { "name": "Anthropic API", "amount_cents": 1049, "date": "2026-04-13", "invoice": "QMMILEGS-0010" },
-      { "name": "ElevenLabs", "amount_cents": 500, "date": "2026-04-13", "invoice": "EL-2026-04" },
-      { "name": "Google Workspace", "amount_cents": 600, "date": "2026-04-01", "invoice": "GW-2026-04" }
+      { "name": "Anthropic API", "amount": 10.49, "date": "2026-04-13" },
+      { "name": "ElevenLabs", "amount": 5.00, "date": "2026-04-13" },
+      { "name": "Google Workspace", "amount": 6.00, "date": "2026-04-01" }
     ]
   }
 }
