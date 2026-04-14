@@ -10,25 +10,24 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #080808;
-      --surface:   #111111;
-      --surface2:  #181818;
-      --border:    rgba(255,255,255,0.07);
-      --border2:   rgba(255,255,255,0.12);
-      --text:      #f0f0f0;
-      --text2:     #888;
-      --text3:     #555;
-      --radius:    16px;
-      --radius-sm: 10px;
+      --bg:       #080808;
+      --surface:  #111111;
+      --surface2: #181818;
+      --border:   rgba(255,255,255,0.07);
+      --border2:  rgba(255,255,255,0.13);
+      --text:     #f0f0f0;
+      --text2:    #888;
+      --text3:    #555;
+      --radius:   16px;
+      --radius-sm:10px;
     }
-
     [data-theme="light"] {
       --bg:       #f5f5f7;
       --surface:  #ffffff;
-      --surface2: #f0f0f2;
+      --surface2: #efefef;
       --border:   rgba(0,0,0,0.08);
-      --border2:  rgba(0,0,0,0.14);
-      --text:     #111111;
+      --border2:  rgba(0,0,0,0.15);
+      --text:     #111;
       --text2:    #666;
       --text3:    #aaa;
     }
@@ -43,867 +42,465 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── HEADER ─────────────────────────────────────── */
+    /* HEADER */
     header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 100;
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
-      background: rgba(8,8,8,0.75);
+      background: rgba(8,8,8,0.78);
       border-bottom: 1px solid var(--border);
       padding: 14px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
     }
+    [data-theme="light"] header { background: rgba(245,245,247,0.82); }
 
-    [data-theme="light"] header {
-      background: rgba(245,245,247,0.8);
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    .header-left { display: flex; align-items: center; gap: 10px; }
     .logo-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #30d158;
-      box-shadow: 0 0 8px #30d15880;
-      flex-shrink: 0;
+      width: 9px; height: 9px; border-radius: 50%;
+      background: #30d158; box-shadow: 0 0 8px #30d15880;
       animation: pulse 2.5s ease-in-out infinite;
     }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 8px #30d15880; }
-      50%       { opacity: 0.7; box-shadow: 0 0 14px #30d158cc; }
-    }
-
-    header h1 {
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      color: var(--text);
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .theme-toggle {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text2);
-      border-radius: 8px;
-      padding: 6px 10px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.15s;
-      line-height: 1;
-    }
-    .theme-toggle:hover { background: var(--border2); }
-
-    .last-updated {
-      font-size: 12px;
-      color: var(--text3);
-      display: none;
-    }
+    header h1 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+    .header-right { display: flex; align-items: center; gap: 10px; }
+    .last-updated { font-size: 12px; color: var(--text3); display: none; }
     @media(min-width:600px){ .last-updated { display: block; } }
-
-    /* ── MAIN ────────────────────────────────────────── */
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 24px 16px 48px;
+    .theme-toggle {
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text2); border-radius: 8px; padding: 6px 10px;
+      font-size: 13px; cursor: pointer; line-height: 1;
     }
 
-    /* ── SECTION LABEL ───────────────────────────────── */
+    /* MAIN */
+    main { max-width: 1200px; margin: 0 auto; padding: 24px 16px 60px; }
+
     .section-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text3);
-      margin-bottom: 14px;
-      padding-left: 2px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text3);
+      margin-bottom: 14px; padding-left: 2px;
     }
 
-    /* ── PORTFOLIO HERO ──────────────────────────────── */
+    /* HERO */
     .portfolio-hero {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 24px; margin-bottom: 12px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; flex-wrap: wrap;
     }
+    .hero-label { font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 4px; }
+    .hero-mrr { font-size: 42px; font-weight: 800; letter-spacing: -2px; line-height: 1; }
+    .hero-target { font-size: 13px; color: var(--text3); margin-top: 6px; }
+    .hero-target span { color: #30d158; font-weight: 600; }
+    .hero-progress-wrap { flex: 1; min-width: 180px; max-width: 320px; }
+    .hero-progress-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+    .progress-track { height: 6px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg,#30d158,#34aadc); transition: width .8s cubic-bezier(.23,1,.32,1); }
 
-    .hero-label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text2);
-      margin-bottom: 4px;
-    }
-
-    .hero-mrr {
-      font-size: 42px;
-      font-weight: 800;
-      letter-spacing: -2px;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .hero-target {
-      font-size: 13px;
-      color: var(--text3);
-      margin-top: 6px;
-    }
-
-    .hero-target span {
-      color: #30d158;
-      font-weight: 600;
-    }
-
-    .hero-progress-wrap {
-      flex: 1;
-      min-width: 180px;
-      max-width: 320px;
-    }
-
-    .hero-progress-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: var(--text3);
-      margin-bottom: 6px;
-    }
-
-    .progress-track {
-      height: 6px;
-      background: var(--surface2);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      border-radius: 99px;
-      background: linear-gradient(90deg, #30d158, #34aadc);
-      transition: width 0.8s cubic-bezier(.23,1,.32,1);
-    }
-
-    /* ── PROJECTS GRID ───────────────────────────────── */
+    /* GRID */
     .projects-section { margin-bottom: 32px; }
+    .projects-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media(min-width:700px)  { .projects-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(min-width:1000px) { .projects-grid { grid-template-columns: repeat(3,1fr); } }
 
-    .projects-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    @media(min-width: 700px) {
-      .projects-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media(min-width: 1000px) {
-      .projects-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    /* ── PROJECT CARD ────────────────────────────────── */
+    /* CARD */
     .project-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
-      cursor: default;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px;
+      position: relative; overflow: hidden;
+      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
     }
+    .project-card:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,.35); border-color: var(--border2); }
+    .card-glow { position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: var(--radius) var(--radius) 0 0; }
 
-    .project-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: var(--radius);
-      opacity: 0;
-      transition: opacity 0.2s;
-      pointer-events: none;
-    }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+    .card-name { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; line-height: 1.2; }
+    .card-tagline { font-size: 13px; color: var(--text2); margin-top: 3px; line-height: 1.4; }
 
-    .project-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
-      border-color: var(--border2);
-    }
-
-    /* Accent glow strip at top */
-    .card-glow {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      border-radius: var(--radius) var(--radius) 0 0;
-    }
-
-    /* Card sections */
-    .card-top {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 16px;
-    }
-
-    .card-name {
-      font-size: 17px;
-      font-weight: 700;
-      letter-spacing: -0.3px;
-      color: var(--text);
-      line-height: 1.2;
-    }
-
-    .card-tagline {
-      font-size: 13px;
-      color: var(--text2);
-      margin-top: 3px;
-      line-height: 1.4;
-    }
-
-    /* Status pill */
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 10px;
-      border-radius: 99px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-    }
-
-    .pill-idea      { background: rgba(136,136,136,0.15); color: #888; }
+    .status-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .pill-idea      { background: rgba(136,136,136,.15); color: #888; }
     .pill-idea .status-dot { background: #888; }
-
-    .pill-building  { background: rgba(52,170,220,0.15); color: #34aadc; }
+    .pill-building  { background: rgba(52,170,220,.15); color: #34aadc; }
     .pill-building .status-dot { background: #34aadc; animation: pulse 1.5s ease-in-out infinite; }
-
-    .pill-testing   { background: rgba(255,204,0,0.15); color: #f0b429; }
-    .pill-testing .status-dot { background: #f0b429; }
-
-    .pill-launching { background: rgba(255,149,0,0.15); color: #ff9500; }
+    .pill-launching { background: rgba(255,149,0,.15); color: #ff9500; }
     .pill-launching .status-dot { background: #ff9500; animation: pulse 1.5s ease-in-out infinite; }
-
-    .pill-live      { background: rgba(48,209,88,0.15); color: #30d158; }
+    .pill-live      { background: rgba(48,209,88,.15); color: #30d158; }
     .pill-live .status-dot { background: #30d158; animation: pulse 2s ease-in-out infinite; }
 
-    /* Progress */
-    .card-progress {
-      margin-bottom: 16px;
-    }
+    .card-progress { margin-bottom: 16px; }
+    .progress-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+    .progress-label { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; }
+    .progress-pct { font-size: 13px; font-weight: 700; }
+    .card-progress .progress-track { height: 5px; }
 
-    .progress-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 7px;
-    }
+    .card-divider { height: 1px; background: var(--border); margin: 16px 0; }
 
-    .progress-label {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text3);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
+    .done-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .done-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: var(--text2); line-height: 1.4; }
+    .done-list li::before { content: '✓'; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; opacity: .6; }
 
-    .progress-pct {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-    }
+    .next-action { display: flex; align-items: flex-start; gap: 8px; padding: 12px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; line-height: 1.4; }
+    .next-icon { font-size: 14px; flex-shrink: 0; }
 
-    .card-progress .progress-track {
-      height: 5px;
-    }
+    .metric-row { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+    .metric-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: .06em; }
+    .metric-value { font-size: 15px; font-weight: 700; }
 
-    /* Divider */
-    .card-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 16px 0;
-    }
+    /* PANELS */
+    .panels-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    @media(min-width:700px)  { .panels-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(min-width:1000px) { .panels-grid { grid-template-columns: repeat(3,1fr); } }
 
-    /* Done list */
-    .done-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 14px;
-    }
-
-    .done-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      font-size: 13px;
-      color: var(--text2);
-      line-height: 1.4;
-    }
-
-    .done-list li::before {
-      content: '✓';
-      font-size: 11px;
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 1px;
-      opacity: 0.6;
-    }
-
-    /* Next action */
-    .next-action {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 12px;
-      border-radius: var(--radius-sm);
-      font-size: 13px;
-      font-weight: 500;
-      line-height: 1.4;
-    }
-
-    .next-icon {
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-
-    /* Metric badge */
-    .metric-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-    }
-
-    .metric-label {
-      font-size: 11px;
-      color: var(--text3);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-
-    .metric-value {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--text);
-    }
-
-    /* ── BOTTOM PANELS ───────────────────────────────── */
-    .panels-section { }
-
-    .panels-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-
-    @media(min-width: 700px) {
-      .panels-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media(min-width: 1000px) {
-      .panels-grid { grid-template-columns: repeat(3, 1fr); }
-    }
-
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 20px;
-    }
-
-    .panel-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 16px;
-      letter-spacing: -0.1px;
-    }
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .panel-title { font-size: 13px; font-weight: 700; margin-bottom: 16px; letter-spacing: -.1px; }
 
     /* Activity */
-    .activity-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .activity-item {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    .activity-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      margin-top: 5px;
-      flex-shrink: 0;
-    }
-
+    .activity-list { display: flex; flex-direction: column; gap: 10px; }
+    .activity-item { display: flex; gap: 10px; align-items: flex-start; }
+    .activity-dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
     .activity-body { flex: 1; }
-
-    .activity-text {
-      font-size: 13px;
-      color: var(--text);
-      line-height: 1.4;
-    }
-
-    .activity-time {
-      font-size: 11px;
-      color: var(--text3);
-      margin-top: 1px;
-    }
+    .activity-text { font-size: 13px; line-height: 1.4; }
+    .activity-time { font-size: 11px; color: var(--text3); margin-top: 1px; }
 
     /* System status */
-    .status-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .status-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .status-name {
-      font-size: 13px;
-      color: var(--text2);
-    }
-
-    .status-indicator {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
+    .status-list { display: flex; flex-direction: column; gap: 10px; }
+    .status-item { display: flex; align-items: center; justify-content: space-between; }
+    .status-name { font-size: 13px; color: var(--text2); }
+    .status-indicator { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; }
     .status-indicator.online  { color: #30d158; }
     .status-indicator.offline { color: #ff453a; }
     .status-indicator.pending { color: #ff9500; }
+    .indicator-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+    .status-indicator.online .indicator-dot { animation: pulse 2.5s ease-in-out infinite; box-shadow: 0 0 6px currentColor; }
 
-    .indicator-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: currentColor;
+    /* API Usage panel */
+    .api-section { margin-bottom: 18px; }
+    .api-section:last-child { margin-bottom: 0; }
+    .api-section-title { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 10px; }
+
+    .cost-hero { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
+    .cost-amount { font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+    .cost-period { font-size: 12px; color: var(--text3); }
+    .cost-sub { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
+    .cost-sub span { color: var(--text2); font-weight: 500; }
+
+    .model-rows { display: flex; flex-direction: column; gap: 8px; }
+    .model-row { display: flex; align-items: center; gap: 10px; }
+    .model-name { font-size: 12px; color: var(--text2); min-width: 110px; }
+    .model-bar-track { flex: 1; height: 4px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+    .model-bar-fill { height: 100%; border-radius: 99px; }
+    .model-pct { font-size: 12px; font-weight: 600; color: var(--text); min-width: 32px; text-align: right; }
+
+    .api-recharge { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding: 10px 12px; background: rgba(255,149,0,.08); border: 1px solid rgba(255,149,0,.2); border-radius: var(--radius-sm); font-size: 12px; color: #ff9500; }
+
+    /* ANIMATIONS */
+    @keyframes pulse {
+      0%,100% { opacity:1; }
+      50%      { opacity:.6; }
     }
-
-    .status-indicator.online .indicator-dot {
-      animation: pulse 2.5s ease-in-out infinite;
-      box-shadow: 0 0 6px currentColor;
-    }
-
-    /* MRR breakdown */
-    .mrr-rows {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .mrr-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .mrr-item-name {
-      font-size: 13px;
-      color: var(--text2);
-      flex: 1;
-    }
-
-    .mrr-item-bar {
-      flex: 2;
-      height: 4px;
-      background: var(--surface2);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-
-    .mrr-item-fill {
-      height: 100%;
-      border-radius: 99px;
-    }
-
-    .mrr-item-val {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-      min-width: 40px;
-      text-align: right;
-    }
-
-    /* ── ANIMATIONS ──────────────────────────────────── */
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
+      from { opacity:0; transform:translateY(14px); }
+      to   { opacity:1; transform:translateY(0); }
     }
+    .project-card, .panel, .portfolio-hero { opacity:0; animation: fadeUp .5s ease forwards; }
+    .portfolio-hero              { animation-delay:.05s; }
+    .project-card:nth-child(1)   { animation-delay:.10s; }
+    .project-card:nth-child(2)   { animation-delay:.15s; }
+    .project-card:nth-child(3)   { animation-delay:.20s; }
+    .project-card:nth-child(4)   { animation-delay:.25s; }
+    .project-card:nth-child(5)   { animation-delay:.30s; }
+    .project-card:nth-child(6)   { animation-delay:.35s; }
+    .panel:nth-child(1)          { animation-delay:.40s; }
+    .panel:nth-child(2)          { animation-delay:.45s; }
+    .panel:nth-child(3)          { animation-delay:.50s; }
 
-    .project-card, .panel, .portfolio-hero {
-      opacity: 0;
-      animation: fadeUp 0.5s ease forwards;
-    }
-
-    .portfolio-hero                 { animation-delay: 0.05s; }
-    .project-card:nth-child(1)      { animation-delay: 0.10s; }
-    .project-card:nth-child(2)      { animation-delay: 0.15s; }
-    .project-card:nth-child(3)      { animation-delay: 0.20s; }
-    .project-card:nth-child(4)      { animation-delay: 0.25s; }
-    .project-card:nth-child(5)      { animation-delay: 0.30s; }
-    .panel:nth-child(1)             { animation-delay: 0.35s; }
-    .panel:nth-child(2)             { animation-delay: 0.40s; }
-    .panel:nth-child(3)             { animation-delay: 0.45s; }
-
-    /* ── SCROLLBAR ───────────────────────────────────── */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius:99px; }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="header-left">
-      <div class="logo-dot"></div>
-      <h1>Mission Control</h1>
-    </div>
-    <div class="header-right">
-      <span class="last-updated" id="lastUpdated">—</span>
-      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">☀️</button>
-    </div>
-  </header>
+<header>
+  <div class="header-left">
+    <div class="logo-dot"></div>
+    <h1>Mission Control</h1>
+  </div>
+  <div class="header-right">
+    <span class="last-updated" id="lastUpdated"></span>
+    <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+  </div>
+</header>
 
-  <main>
+<main>
 
-    <!-- PORTFOLIO HERO -->
-    <div class="portfolio-hero">
-      <div>
-        <div class="hero-label">Portfolio MRR</div>
-        <div class="hero-mrr">$0</div>
-        <div class="hero-target">Target: <span>$50,000 / mo</span></div>
+  <!-- HERO -->
+  <div class="portfolio-hero">
+    <div>
+      <div class="hero-label">Portfolio MRR</div>
+      <div class="hero-mrr">$0</div>
+      <div class="hero-target">Target: <span>$50,000 / mo</span></div>
+    </div>
+    <div class="hero-progress-wrap">
+      <div class="hero-progress-labels"><span>$0</span><span>$50K goal</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="projects-section">
+    <div class="section-label" style="margin-top:28px">Projects</div>
+    <div class="projects-grid" id="projectsGrid"></div>
+  </div>
+
+  <!-- PANELS -->
+  <div>
+    <div class="section-label">Status</div>
+    <div class="panels-grid">
+
+      <!-- Activity -->
+      <div class="panel">
+        <div class="panel-title">Recent Activity</div>
+        <div class="activity-list" id="activityList"></div>
       </div>
-      <div class="hero-progress-wrap">
-        <div class="hero-progress-labels">
-          <span>0%</span>
-          <span>Goal: $50K</span>
-        </div>
-        <div class="progress-track">
-          <div class="progress-fill" style="width: 0%;"></div>
-        </div>
+
+      <!-- System Status -->
+      <div class="panel">
+        <div class="panel-title">System Status</div>
+        <div class="status-list" id="statusList"></div>
       </div>
-    </div>
 
-    <!-- PROJECTS -->
-    <div class="projects-section">
-      <div class="section-label" style="margin-top:28px;">Projects</div>
-      <div class="projects-grid" id="projectsGrid"></div>
-    </div>
+      <!-- API Usage -->
+      <div class="panel">
+        <div class="panel-title">API Usage & Cost</div>
 
-    <!-- BOTTOM PANELS -->
-    <div class="panels-section">
-      <div class="section-label" style="margin-top:4px;">Status</div>
-      <div class="panels-grid">
-
-        <!-- Activity -->
-        <div class="panel">
-          <div class="panel-title">Recent Activity</div>
-          <div class="activity-list" id="activityList"></div>
-        </div>
-
-        <!-- System Status -->
-        <div class="panel">
-          <div class="panel-title">System Status</div>
-          <div class="status-list" id="statusList"></div>
-        </div>
-
-        <!-- MRR Breakdown -->
-        <div class="panel">
-          <div class="panel-title">Revenue Breakdown</div>
-          <div class="mrr-rows" id="mrrRows"></div>
-        </div>
-
-      </div>
-    </div>
-
-  </main>
-
-  <script>
-    // ── DATA ────────────────────────────────────────────
-    const PROJECTS = [
-      {
-        id: 'liv-intel',
-        name: 'LIV Intel Social',
-        tagline: 'Competitive intelligence monitor for LIV Nightclub',
-        status: 'building',
-        statusLabel: 'Building',
-        progress: 70,
-        color: '#f0b429',
-        done: [
-          'Social monitoring live & running',
-          '4-hourly competitor alert system built',
-          'PWA dashboard with real-time alerts',
-        ],
-        next: 'Wire live analytics charts to PWA dashboard',
-        metricLabel: 'Alerts / week',
-        metricValue: '—',
-        mrr: 0,
-        updated: 'Apr 13',
-      },
-      {
-        id: 'jarvis',
-        name: 'JARVIS Voice',
-        tagline: 'Wake-word voice assistant — Hey Jarvis → Claude → ElevenLabs',
-        status: 'building',
-        statusLabel: 'Building',
-        progress: 85,
-        color: '#bf5af2',
-        done: [
-          'Full voice pipeline built (wake word + Whisper + TTS)',
-          'ElevenLabs George voice ready',
-          'launchd auto-start configured',
-        ],
-        next: 'Plug in USB mic to go live',
-        metricLabel: 'Status',
-        metricValue: 'Needs mic',
-        mrr: 0,
-        updated: 'Apr 13',
-      },
-      {
-        id: 'brandguard',
-        name: 'BrandGuard Social',
-        tagline: 'AI competitive intelligence SaaS for e-commerce brands',
-        status: 'launching',
-        statusLabel: 'Launching',
-        progress: 40,
-        color: '#ff9500',
-        done: [
-          'Landing page built — 3 pricing tiers',
-          'Infrastructure ready (built on LIV Intel modules)',
-          'Pricing set: $199 – $499 / month',
-        ],
-        next: 'Create Stripe account + set up 3 subscription products',
-        metricLabel: 'MRR',
-        metricValue: '$0',
-        mrr: 0,
-        updated: 'Apr 10',
-      },
-      {
-        id: 'leaseowl',
-        name: 'LeaseOwl',
-        tagline: 'Business idea — details coming soon',
-        status: 'launching',
-        statusLabel: 'Launching',
-        progress: 10,
-        color: '#5e5ce6',
-        done: [
-          'Concept identified',
-        ],
-        next: 'Define core product and first build',
-        metricLabel: 'MRR',
-        metricValue: '$0',
-        mrr: 0,
-        updated: 'Apr 13',
-      },
-      {
-        id: 'epn',
-        name: 'EPN',
-        tagline: 'Business idea — details coming soon',
-        status: 'idea',
-        statusLabel: 'Idea',
-        progress: 5,
-        color: '#30d158',
-        done: [
-          'Concept identified',
-        ],
-        next: 'Define and scope the idea',
-        metricLabel: null,
-        metricValue: null,
-        mrr: 0,
-        updated: 'Apr 13',
-      },
-    ];
-
-    const ACTIVITY = [
-      { color: '#bf5af2', text: 'JARVIS Voice pipeline built — waiting on USB mic', time: 'Apr 13, 8pm' },
-      { color: '#f0b429', text: 'Mission Control redesigned with Apple-style UI', time: 'Apr 13, 8pm' },
-      { color: '#34aadc', text: 'LIV CRM lifetime spend fixed — 670 guests, $3.08M verified', time: 'Apr 13, 2pm' },
-      { color: '#ff9500', text: 'BrandGuard Social landing page built', time: 'Apr 10' },
-      { color: '#f0b429', text: 'LIV Intel Social — 4-hourly monitor live', time: 'Apr 9' },
-    ];
-
-    const SYSTEM_STATUS = [
-      { name: 'LIV CRM Dashboard',  status: 'online',  label: 'Online' },
-      { name: 'n8n Workflows',       status: 'online',  label: 'Online' },
-      { name: 'WhatsApp Gateway',    status: 'online',  label: 'Online' },
-      { name: 'JARVIS Voice',        status: 'pending', label: 'Needs mic' },
-      { name: 'Mac mini Node',       status: 'online',  label: 'Online' },
-    ];
-
-    // ── RENDER PROJECTS ─────────────────────────────────
-    function renderProjects() {
-      const grid = document.getElementById('projectsGrid');
-      grid.innerHTML = PROJECTS.map(p => {
-        const pillClass = `pill-${p.status}`;
-        const nextBg = p.color + '18';
-        const nextColor = p.color;
-        const doneItems = p.done.map(d => `<li>${d}</li>`).join('');
-        const metric = p.metricLabel
-          ? `<div class="metric-row">
-               <span class="metric-label">${p.metricLabel}</span>
-               <span class="metric-value">${p.metricValue}</span>
-             </div>`
-          : '';
-        return `
-          <div class="project-card">
-            <div class="card-glow" style="background: linear-gradient(90deg, ${p.color}, ${p.color}88);"></div>
-            <div class="card-top">
-              <div>
-                <div class="card-name">${p.name}</div>
-                <div class="card-tagline">${p.tagline}</div>
-              </div>
-              <div class="status-pill ${pillClass}">
-                <span class="status-dot"></span>
-                ${p.statusLabel}
-              </div>
-            </div>
-
-            <div class="card-progress">
-              <div class="progress-meta">
-                <span class="progress-label">Progress</span>
-                <span class="progress-pct">${p.progress}%</span>
-              </div>
-              <div class="progress-track">
-                <div class="progress-fill" style="width:${p.progress}%; background: linear-gradient(90deg, ${p.color}cc, ${p.color});"></div>
-              </div>
-            </div>
-
-            <div class="card-divider"></div>
-
-            <ul class="done-list">${doneItems}</ul>
-
-            <div class="next-action" style="background:${nextBg}; color:${nextColor};">
-              <span class="next-icon">→</span>
-              <span>${p.next}</span>
-            </div>
-
-            ${metric}
+        <div class="api-section">
+          <div class="api-section-title">This Month</div>
+          <div class="cost-hero">
+            <span class="cost-amount" id="monthlyCost">$1.23</span>
+            <span class="cost-period">/ April 2026</span>
           </div>
-        `;
-      }).join('');
-    }
+          <div class="cost-sub">Today: <span id="todayCost">$0.08</span> &nbsp;·&nbsp; Auto-recharge: <span>$10 @ $5 threshold</span></div>
+        </div>
 
-    // ── RENDER ACTIVITY ─────────────────────────────────
-    function renderActivity() {
-      document.getElementById('activityList').innerHTML = ACTIVITY.map(a => `
-        <div class="activity-item">
-          <div class="activity-dot" style="background:${a.color};box-shadow:0 0 6px ${a.color}80;"></div>
-          <div class="activity-body">
-            <div class="activity-text">${a.text}</div>
-            <div class="activity-time">${a.time}</div>
+        <div class="api-section">
+          <div class="api-section-title">Models in Use</div>
+          <div class="model-rows" id="modelRows"></div>
+        </div>
+
+        <div class="api-recharge">
+          ⚡ Last recharge: Apr 13 — $10.49 &nbsp;·&nbsp; Watch usage closely
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+const PROJECTS = [
+  {
+    name: 'LIV CRM',
+    tagline: 'AI-native guest CRM for LIV Nightclub at Fontainebleau Las Vegas',
+    status: 'live', statusLabel: 'Live',
+    progress: 90,
+    color: '#34aadc',
+    done: [
+      '670 guest profiles — $3.08M lifetime revenue tracked',
+      '12 n8n workflows: WhatsApp, birthday, thank-you, reports',
+      'Lifetime spend fixed & tier system verified',
+    ],
+    next: 'Upload 2024 + 2026 data → unlock YOY comparison',
+    metricLabel: 'Guests', metricValue: '670',
+  },
+  {
+    name: 'LIV Intel Social',
+    tagline: 'Competitive intelligence monitor for LIV Nightclub',
+    status: 'building', statusLabel: 'Building',
+    progress: 70,
+    color: '#f0b429',
+    done: [
+      'Social monitoring live & running',
+      '4-hourly competitor alert cron active',
+      'PWA dashboard with alert feed built',
+    ],
+    next: 'Wire live analytics charts to PWA',
+    metricLabel: 'Alerts / week', metricValue: '—',
+  },
+  {
+    name: 'JARVIS Voice',
+    tagline: 'Wake-word voice assistant — Hey Jarvis → Claude → ElevenLabs',
+    status: 'building', statusLabel: 'Building',
+    progress: 85,
+    color: '#bf5af2',
+    done: [
+      'Full pipeline built: wake word + Whisper + TTS',
+      'ElevenLabs George voice configured',
+      'launchd auto-start plist ready',
+    ],
+    next: 'Plug in USB mic to activate',
+    metricLabel: 'Status', metricValue: 'Needs mic',
+  },
+  {
+    name: 'BrandGuard Social',
+    tagline: 'AI competitive intelligence SaaS for e-commerce brands',
+    status: 'launching', statusLabel: 'Launching',
+    progress: 40,
+    color: '#ff9500',
+    done: [
+      'Landing page built — 3 tiers ($199–$499/mo)',
+      'Infrastructure ready (built on LIV Intel modules)',
+      'Onboarding flow + DB schema designed',
+    ],
+    next: 'Set up Stripe — 3 subscription products',
+    metricLabel: 'MRR', metricValue: '$0',
+  },
+  {
+    name: 'LeaseOwl',
+    tagline: 'AI lease analyzer for renters — scan your lease, know your rights',
+    status: 'launching', statusLabel: 'Launching',
+    progress: 15,
+    color: '#5e5ce6',
+    done: [
+      'Concept defined — renter-focused AI tool',
+    ],
+    next: 'Scope MVP: lease upload → AI analysis → plain-language summary',
+    metricLabel: 'MRR', metricValue: '$0',
+  },
+  {
+    name: 'EPN',
+    tagline: 'AI-powered B2B sales leads from Start LLC database — outreach & services',
+    status: 'building', statusLabel: 'Building',
+    progress: 20,
+    color: '#30d158',
+    done: [
+      'Business page in progress',
+      'Lead source identified: Start LLC database',
+    ],
+    next: 'Build business page with AI service offerings + helpful links',
+    metricLabel: null, metricValue: null,
+  },
+];
+
+const ACTIVITY = [
+  { color: '#34aadc', text: 'Mission Control redesigned — Apple-style UI live', time: 'Apr 13, 8pm' },
+  { color: '#bf5af2', text: 'JARVIS Voice pipeline built — waiting on USB mic', time: 'Apr 13, 8pm' },
+  { color: '#34aadc', text: 'LIV CRM: lifetime spend fixed — 670 guests, $3.08M verified', time: 'Apr 13, 2pm' },
+  { color: '#f0b429', text: 'LIV Intel Social — 4-hourly monitor live', time: 'Apr 9' },
+  { color: '#ff9500', text: 'BrandGuard Social — landing page + pricing launched', time: 'Apr 10' },
+];
+
+const SYSTEM_STATUS = [
+  { name: 'LIV CRM Dashboard',  status: 'online',  label: 'Online' },
+  { name: 'n8n Workflows',      status: 'online',  label: 'Online' },
+  { name: 'WhatsApp Gateway',   status: 'online',  label: 'Online' },
+  { name: 'JARVIS Voice',       status: 'pending', label: 'Needs mic' },
+  { name: 'Mac mini Node',      status: 'online',  label: 'Online' },
+];
+
+const MODELS = [
+  { name: 'Claude Haiku',  color: '#34aadc', pct: 70 },
+  { name: 'Claude Sonnet', color: '#bf5af2', pct: 25 },
+  { name: 'Claude Opus',   color: '#ff9500', pct: 5  },
+];
+
+// Render projects
+function renderProjects() {
+  document.getElementById('projectsGrid').innerHTML = PROJECTS.map(p => {
+    const done = p.done.map(d => `<li>${d}</li>`).join('');
+    const metric = p.metricLabel
+      ? `<div class="metric-row"><span class="metric-label">${p.metricLabel}</span><span class="metric-value">${p.metricValue}</span></div>`
+      : '';
+    return `
+      <div class="project-card">
+        <div class="card-glow" style="background:linear-gradient(90deg,${p.color},${p.color}66)"></div>
+        <div class="card-top">
+          <div>
+            <div class="card-name">${p.name}</div>
+            <div class="card-tagline">${p.tagline}</div>
+          </div>
+          <div class="status-pill pill-${p.status}">
+            <span class="status-dot"></span>${p.statusLabel}
           </div>
         </div>
-      `).join('');
-    }
-
-    // ── RENDER SYSTEM STATUS ────────────────────────────
-    function renderStatus() {
-      document.getElementById('statusList').innerHTML = SYSTEM_STATUS.map(s => `
-        <div class="status-item">
-          <span class="status-name">${s.name}</span>
-          <span class="status-indicator ${s.status}">
-            <span class="indicator-dot"></span>
-            ${s.label}
-          </span>
-        </div>
-      `).join('');
-    }
-
-    // ── RENDER MRR ──────────────────────────────────────
-    function renderMRR() {
-      const max = 50000;
-      document.getElementById('mrrRows').innerHTML = PROJECTS.map(p => {
-        const pct = Math.max(1, (p.mrr / max) * 100);
-        const val = p.mrr > 0 ? '$' + p.mrr.toLocaleString() : '$0';
-        return `
-          <div class="mrr-item">
-            <span class="mrr-item-name">${p.name}</span>
-            <div class="mrr-item-bar">
-              <div class="mrr-item-fill" style="width:${pct}%;background:${p.color};"></div>
-            </div>
-            <span class="mrr-item-val">${val}</span>
+        <div class="card-progress">
+          <div class="progress-meta">
+            <span class="progress-label">Progress</span>
+            <span class="progress-pct">${p.progress}%</span>
           </div>
-        `;
-      }).join('');
-    }
+          <div class="progress-track">
+            <div class="progress-fill" style="width:${p.progress}%;background:linear-gradient(90deg,${p.color}99,${p.color})"></div>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <ul class="done-list">${done}</ul>
+        <div class="next-action" style="background:${p.color}18;color:${p.color}">
+          <span class="next-icon">→</span><span>${p.next}</span>
+        </div>
+        ${metric}
+      </div>`;
+  }).join('');
+}
 
-    // ── LAST UPDATED ────────────────────────────────────
-    function setLastUpdated() {
-      const now = new Date();
-      const opts = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
-      document.getElementById('lastUpdated').textContent =
-        'Updated ' + now.toLocaleString('en-US', opts);
-    }
+function renderActivity() {
+  document.getElementById('activityList').innerHTML = ACTIVITY.map(a => `
+    <div class="activity-item">
+      <div class="activity-dot" style="background:${a.color};box-shadow:0 0 6px ${a.color}80"></div>
+      <div class="activity-body">
+        <div class="activity-text">${a.text}</div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+    </div>`).join('');
+}
 
-    // ── THEME ───────────────────────────────────────────
-    function toggleTheme() {
-      const html = document.documentElement;
-      const isDark = html.getAttribute('data-theme') === 'dark';
-      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
-      document.querySelector('.theme-toggle').textContent = isDark ? '🌙' : '☀️';
-      localStorage.setItem('mc-theme', isDark ? 'light' : 'dark');
-    }
+function renderStatus() {
+  document.getElementById('statusList').innerHTML = SYSTEM_STATUS.map(s => `
+    <div class="status-item">
+      <span class="status-name">${s.name}</span>
+      <span class="status-indicator ${s.status}">
+        <span class="indicator-dot"></span>${s.label}
+      </span>
+    </div>`).join('');
+}
 
-    function initTheme() {
-      const saved = localStorage.getItem('mc-theme');
-      if (saved) {
-        document.documentElement.setAttribute('data-theme', saved);
-        document.querySelector('.theme-toggle').textContent = saved === 'dark' ? '☀️' : '🌙';
-      }
-    }
+function renderModels() {
+  document.getElementById('modelRows').innerHTML = MODELS.map(m => `
+    <div class="model-row">
+      <span class="model-name">${m.name}</span>
+      <div class="model-bar-track">
+        <div class="model-bar-fill" style="width:${m.pct}%;background:${m.color}"></div>
+      </div>
+      <span class="model-pct">${m.pct}%</span>
+    </div>`).join('');
+}
 
-    // ── INIT ────────────────────────────────────────────
-    initTheme();
-    renderProjects();
-    renderActivity();
-    renderStatus();
-    renderMRR();
-    setLastUpdated();
-  </script>
+function setLastUpdated() {
+  const now = new Date();
+  document.getElementById('lastUpdated').textContent =
+    'Updated ' + now.toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.querySelector('.theme-toggle').textContent = isDark ? '🌙' : '☀️';
+  localStorage.setItem('mc-theme', isDark ? 'light' : 'dark');
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('mc-theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    document.querySelector('.theme-toggle').textContent = saved === 'dark' ? '☀️' : '🌙';
+  }
+}
+
+initTheme();
+renderProjects();
+renderActivity();
+renderStatus();
+renderModels();
+setLastUpdated();
+</script>
 </body>
 </html>
