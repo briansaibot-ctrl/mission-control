@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mission Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #080808;
+            background: radial-gradient(ellipse at top, #1a1a2e 0%, #080808 40%);
+            color: #e4e4e7;
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid #1a1a1a;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header-dots {
+            display: flex;
+            gap: 0.3rem;
+            margin-right: 0.5rem;
+        }
+
+        .header-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .header-dot.cyan {
+            background: #00e5ff;
+            box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+        }
+
+        .header-dot.amber {
+            background: #f59e0b;
+            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+        }
+
+        .header-content h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-content p {
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .weather-widget {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid #1a1a1a;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .weather-widget-location {
+            color: #888;
+            margin-bottom: 0.25rem;
+        }
+
+        .weather-widget-temps {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .weather-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .weather-label {
+            color: #666;
+            font-size: 0.75rem;
+        }
+
+        .weather-temp {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #1a1a1a;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot.active {
+            background: #10b981;
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Projects Grid */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 1200px) {
+            .projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .project-card {
+            background: #0c0c0c;
+            border: 1px solid #1a1a1a;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: slideUp 0.6s ease-out backwards;
+            opacity: 0;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .project-card:nth-child(1) { animation-delay: 0.1s; }
+        .project-card:nth-child(2) { animation-delay: 0.2s; }
+        .project-card:nth-child(3) { animation-delay: 0.3s; }
+        .project-card:nth-child(4) { animation-delay: 0.4s; }
+        .project-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .project-card:hover {
+            border-color: #333;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .card-accent {
+            height: 4px;
+            background: linear-gradient(90deg, currentColor, transparent);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            position: relative;
+            min-height: 50px;
+        }
+
+        .card-title-section {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            flex: 1;
+        }
+
+        .progress-ring-container {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+        }
+
+        .progress-ring {
+            width: 50px;
+            height: 50px;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring-circle {
+            fill: none;
+            stroke: #1a1a1a;
+            stroke-width: 3;
+            transition: stroke-dashoffset 0.6s ease;
+        }
+
+        .progress-ring-circle.active {
+            stroke: currentColor;
+            filter: drop-shadow(0 0 4px currentColor);
+        }
+
+        .progress-ring-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: currentColor;
+        }
+
+        .title-content {
+            flex: 1;
+        }
+
+        .title-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .project-name {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+        }
+
+        .status-badge-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .last-activity {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .sparkline-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 50px;
+        }
+
+        .focus-text {
+            padding: 0.75rem;
+            padding-left: 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 3px solid currentColor;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            line-height: 1.4;
+        }
+
+        .metric-row {
+            margin-bottom: 1rem;
+        }
+
+        .metric-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .metric-value {
+            font-weight: 700;
+            color: #e4e4e7;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+            animation: fillBar 0.8s ease-out;
+        }
+
+        @keyframes fillBar {
+            from {
+                width: 0;
+            }
+        }
+
+        .gradient-fill {
+            background: linear-gradient(90deg, currentColor, rgba(255, 255, 255, 0.2));
+        }
+
+        .tasks-bar {
+            display: flex;
+            gap: 2px;
+            height: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .task-segment {
+            flex: 1;
+            background: #1a1a1a;
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .task-segment.done {
+            background: currentColor;
+            filter: drop-shadow(0 0 3px currentColor);
+        }
+
+        .weekly-chart {
+            display: flex;
+            gap: 4px;
+            height: 30px;
+            align-items: flex-end;
+            margin-bottom: 1rem;
+        }
+
+        .weekly-day {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.3rem;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .weekly-bar {
+            width: 100%;
+            background: #1a1a1a;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            min-height: 2px;
+        }
+
+        .weekly-bar.filled {
+            background: currentColor;
+            filter: drop-shadow(0 0 3px currentColor);
+        }
+
+        .weekly-bar.today {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid #666;
+        }
+
+        .weekly-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+
+        .next-action {
+            padding-top: 0.75rem;
+            border-top: 1px solid #1a1a1a;
+            font-size: 0.8rem;
+            color: #999;
+            line-height: 1.4;
+        }
+
+        /* Bottom Panels */
+        .bottom-panels {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+            animation: slideUp 0.6s ease-out 0.6s backwards;
+        }
+
+        @media (max-width: 1024px) {
+            .bottom-panels {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: #0c0c0c;
+            border: 1px solid #1a1a1a;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            border-color: #333;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            color: #bbb;
+        }
+
+        /* Activity Log */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .activity-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .activity-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .activity-list::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 3px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-left: 3px solid;
+            padding-left: 0.75rem;
+            font-size: 0.8rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .activity-item:nth-child(1) { opacity: 1.0; }
+        .activity-item:nth-child(2) { opacity: 0.95; }
+        .activity-item:nth-child(3) { opacity: 0.85; }
+        .activity-item:nth-child(4) { opacity: 0.75; }
+        .activity-item:nth-child(5) { opacity: 0.65; }
+        .activity-item:nth-child(n+6) { opacity: 0.5; }
+
+        .activity-time {
+            color: #666;
+            flex-shrink: 0;
+            min-width: 60px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-label {
+            font-weight: 700;
+            color: #e4e4e7;
+            display: inline;
+        }
+
+        .activity-text {
+            color: #999;
+            display: inline;
+        }
+
+        .activity-item.system {
+            border-left-color: #00e5ff;
+        }
+
+        .activity-item.jarvis {
+            border-left-color: #a855f7;
+        }
+
+        .activity-item.crm {
+            border-left-color: #00e5ff;
+        }
+
+        .activity-item.intel {
+            border-left-color: #f59e0b;
+        }
+
+        /* Portfolio Overview */
+        .mrr-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.5rem;
+        }
+
+        .mrr-amount {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mrr-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00e5ff;
+        }
+
+        .mrr-goal {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .mrr-bar-container {
+            flex: 1;
+            margin: 0 1rem;
+        }
+
+        .mrr-bar {
+            height: 6px;
+            background: #1a1a1a;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .mrr-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00e5ff, #0099cc);
+            width: 6.16%;
+            border-radius: 3px;
+        }
+
+        .mrr-pct {
+            font-size: 0.75rem;
+            color: #666;
+            text-align: right;
+        }
+
+        .portfolio-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .stat-item {
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 2px solid #1a1a1a;
+            border-radius: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #e4e4e7;
+        }
+
+        .breakdown-title {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .breakdown-bar {
+            height: 20px;
+            background: #1a1a1a;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .breakdown-segment {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #000;
+        }
+
+        /* System Status */
+        .system-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .system-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.25rem;
+            font-size: 0.85rem;
+        }
+
+        .system-label {
+            color: #888;
+        }
+
+        .system-value {
+            font-weight: 700;
+            color: #e4e4e7;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .system-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .system-indicator.connected {
+            background: #10b981;
+            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+        }
+
+        .system-indicator.disconnected {
+            background: #6b7280;
+        }
+
+        .system-indicator.warning {
+            background: #ef4444;
+            box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+        }
+
+        .api-usage-bar {
+            height: 8px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .api-usage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #10b981);
+            width: 42%;
+            border-radius: 4px;
+        }
+
+        .api-usage-fill.warning {
+            background: linear-gradient(90deg, #f59e0b, #f59e0b);
+        }
+
+        .api-usage-fill.critical {
+            background: linear-gradient(90deg, #ef4444, #ef4444);
+        }
+
+        .shift-indicator {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .shift-indicator.pre {
+            color: #f59e0b;
+        }
+
+        .shift-indicator.at {
+            color: #a855f7;
+        }
+
+        .shift-indicator.off {
+            color: #6b7280;
+        }
+
+        .pills-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.6rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 0.25rem;
+            font-size: 0.7rem;
+        }
+
+        .pill.model {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="header-dots">
+                <div class="header-dot cyan"></div>
+                <div class="header-dot amber"></div>
+            </div>
+            <div class="header-content">
+                <h1>MISSION CONTROL</h1>
+                <p>Nova · Brian Altmann · Las Vegas</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="weather-widget">
+                <div class="weather-widget-location">Las Vegas</div>
+                <div class="weather-widget-temps">
+                    <div class="weather-item">
+                        <div class="weather-label">Day</div>
+                        <div class="weather-temp" id="weatherDay">85°F</div>
+                    </div>
+                    <div class="weather-item">
+                        <div class="weather-label">Night</div>
+                        <div class="weather-temp" id="weatherNight">72°F</div>
+                    </div>
+                </div>
+            </div>
+            <div class="status-pill">
+                <span class="status-dot active" id="shiftDot"></span>
+                <span id="shiftStatus">Pre-Shift</span>
+            </div>
+            <div class="status-pill">
+                <span class="status-dot active"></span>
+                <span>Nova Active</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="projects-grid" id="projectsGrid"></div>
+        
+        <div class="bottom-panels">
+            <!-- Activity Log -->
+            <div class="panel">
+                <div class="panel-title">ACTIVITY LOG</div>
+                <div class="activity-list" id="activityLog"></div>
+            </div>
+
+            <!-- Portfolio Overview -->
+            <div class="panel">
+                <div class="panel-title">PORTFOLIO MRR</div>
+                <div class="mrr-display">
+                    <div class="mrr-amount">
+                        <div class="mrr-value" id="portfolioMRR">$3,082</div>
+                        <div class="mrr-goal">/ $50,000</div>
+                    </div>
+                    <div class="mrr-bar-container">
+                        <div class="mrr-bar">
+                            <div class="mrr-fill" id="portfolioBar"></div>
+                        </div>
+                        <div class="mrr-pct">6.16%</div>
+                    </div>
+                </div>
+                <div class="portfolio-stats" id="portfolioStats"></div>
+                <div class="breakdown-title">MRR BREAKDOWN</div>
+                <div class="breakdown-bar">
+                    <div class="breakdown-segment" style="width: 100%; background: #00e5ff;">LIV CRM $3,082</div>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="panel">
+                <div class="panel-title">SYSTEM STATUS</div>
+                <div class="system-rows">
+                    <div class="system-row">
+                        <div class="system-label">Daily API Usage</div>
+                        <div class="system-value">
+                            <span id="apiUsageText">42 / 100</span>
+                        </div>
+                    </div>
+                    <div class="api-usage-bar">
+                        <div class="api-usage-fill" id="apiUsageFill"></div>
+                    </div>
+                    
+                    <div class="system-row">
+                        <div class="system-label">API Costs Today</div>
+                        <div class="system-value" id="apiCosts">Sonnet $0.31 | Haiku $0.09 | Total $0.40</div>
+                    </div>
+
+                    <div class="system-row">
+                        <div class="system-label">Shift Status</div>
+                        <div class="system-value">
+                            <span class="shift-indicator" id="shiftStatusFull">Pre-Shift</span>
+                        </div>
+                    </div>
+
+                    <div class="system-row">
+                        <div class="system-label">WhatsApp</div>
+                        <div class="system-value">
+                            <span class="system-indicator connected"></span>
+                            <span>Connected</span>
+                        </div>
+                    </div>
+
+                    <div class="system-row">
+                        <div class="system-label">Gmail</div>
+                        <div class="system-value">
+                            <span class="system-indicator connected"></span>
+                            <span>Connected</span>
+                        </div>
+                    </div>
+
+                    <div class="system-row">
+                        <div class="system-label">JARVIS Voice</div>
+                        <div class="system-value">
+                            <span class="system-indicator disconnected"></span>
+                            <span>Waiting for mic</span>
+                        </div>
+                    </div>
+
+                    <div class="system-row">
+                        <div class="system-label">Cron Jobs</div>
+                        <div class="system-value" id="cronInfo">15 running · Next: 8:00 PM</div>
+                    </div>
+
+                    <div class="system-row">
+                        <div class="system-label">Memory Updated</div>
+                        <div class="system-value" id="memoryUpdate">Apr 13, 6:03 PM</div>
+                    </div>
+
+                    <div class="pills-row">
+                        <div class="pill model">claude-sonnet-4-6</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PROJECTS = [
+            {
+                id: "liv-crm",
+                name: "LIV CRM",
+                initial: "L",
+                color: "#00e5ff",
+                status: "active",
+                mrr: { actual: 3082, target: 50000, label: "MRR" },
+                milestone: { label: "LIFETIME SPEND FIX", pct: 100 },
+                tasks: { done: 8, total: 10 },
+                lastActivity: "2h",
+                focus: "670 guest profiles, $3.08M revenue tracked",
+                nextAction: "Upload 2024 & 2026 data for YOY comparison",
+                spark: [20,45,30,60,40,80,65,90],
+                weekly: [3,5,2,8,6,1,4]
+            },
+            {
+                id: "liv-intel",
+                name: "LIV INTEL",
+                initial: "I",
+                color: "#f59e0b",
+                status: "active",
+                mrr: { actual: 0, target: 50000, label: "MRR" },
+                milestone: { label: "PWA v18 LIVE", pct: 100 },
+                tasks: { done: 12, total: 14 },
+                lastActivity: "4h",
+                focus: "Social competitor monitor — 10 venues, 3x daily",
+                nextAction: "Wire live analytics data to PWA charts",
+                spark: [10,30,20,50,35,70,55,85],
+                weekly: [2,4,1,6,5,0,3]
+            },
+            {
+                id: "jarvis",
+                name: "JARVIS VOICE",
+                initial: "J",
+                color: "#a855f7",
+                status: "launching",
+                mrr: { actual: 0, target: 50000, label: "MRR" },
+                milestone: { label: "MIC REQUIRED", pct: 85 },
+                tasks: { done: 7, total: 8 },
+                lastActivity: "30m",
+                focus: "Hey Jarvis wake word + ElevenLabs George voice",
+                nextAction: "Plug in USB mic → run setup.sh → go live",
+                spark: [0,0,10,20,40,60,75,85],
+                weekly: [0,0,0,0,5,8,9]
+            },
+            {
+                id: "epn",
+                name: "EPN",
+                initial: "E",
+                color: "#10b981",
+                status: "launching",
+                mrr: { actual: 0, target: 50000, label: "MRR" },
+                milestone: { label: "FOUNDATION", pct: 10 },
+                tasks: { done: 1, total: 10 },
+                lastActivity: "—",
+                focus: "B2B lead intelligence platform",
+                nextAction: "Define MVP scope and data sources",
+                spark: [0,0,0,0,0,0,5,10],
+                weekly: [0,0,0,0,0,0,1]
+            },
+            {
+                id: "leaseowl",
+                name: "LEASEOWL",
+                initial: "O",
+                color: "#6366f1",
+                status: "launching",
+                mrr: { actual: 0, target: 50000, label: "MRR" },
+                milestone: { label: "FOUNDATION", pct: 5 },
+                tasks: { done: 0, total: 10 },
+                lastActivity: "—",
+                focus: "Real estate lease intelligence",
+                nextAction: "Define MVP scope and target market",
+                spark: [0,0,0,0,0,0,0,5],
+                weekly: [0,0,0,0,0,0,0]
+            }
+        ];
+
+        const ACTIVITY_LOG = [
+            { time: "6:02 PM", type: "system", label: "NOVA", text: "Gmail OAuth connected — email reports live" },
+            { time: "5:53 PM", type: "jarvis", label: "JARVIS", text: "ElevenLabs George voice tested — flash model active" },
+            { time: "4:44 PM", type: "crm", label: "LIV CRM", text: "Lifetime spend fix complete — 670 guests, $3.08M verified" },
+            { time: "4:20 PM", type: "system", label: "NOVA", text: "Gmail hook dedup fixed — billing emails silenced" },
+            { time: "3:00 PM", type: "intel", label: "LIV INTEL", text: "PWA v18 deployed — Best Times bars fixed, Download Report added" },
+            { time: "11:00 AM", type: "intel", label: "LIV INTEL", text: "Monday trend digest sent to WhatsApp" },
+        ];
+
+        const SYSTEM = {
+            apiUsage: { used: 42, limit: 100 },
+            apiCost: { sonnet: 0.31, haiku: 0.09, total: 0.40 },
+            whatsapp: true,
+            gmail: true,
+            jarvisVoice: false,
+            cronJobs: 15,
+            nextCron: "8:00 PM",
+            novaModel: "claude-sonnet-4-6",
+            memoryUpdated: "Apr 13, 6:03 PM"
+        };
+
+        const PORTFOLIO = {
+            totalMRR: 3082,
+            goal: 50000,
+            stats: [
+                { label: "Active Projects", value: "2" },
+                { label: "Launching Soon", value: "3" },
+                { label: "Cron Jobs", value: "15" },
+                { label: "Guests in CRM", value: "670" }
+            ]
+        };
+
+        function getStatusColor(status) {
+            const colors = {
+                "active": "#00e5ff",
+                "launching": "#f59e0b",
+                "blocked": "#ef4444",
+                "on hold": "#6b7280"
+            };
+            return colors[status] || "#6b7280";
+        }
+
+        function createSparkline(data, color) {
+            const width = 100;
+            const height = 40;
+            const padding = 2;
+            const graphWidth = width - padding * 2;
+            const graphHeight = height - padding * 2;
+            
+            const max = Math.max(...data);
+            const step = graphWidth / (data.length - 1);
+            
+            let points = [];
+            data.forEach((value, i) => {
+                const x = padding + i * step;
+                const y = padding + graphHeight - (value / max) * graphHeight;
+                points.push(`${x},${y}`);
+            });
+            
+            const svg = `<svg width="${width}" height="${height}" style="overflow: visible;">
+                <polyline points="${points.join(' ')}" fill="none" stroke="${color}" stroke-width="1.5" opacity="0.7" />
+                <circle cx="${padding + (data.length - 1) * step}" cy="${padding + graphHeight - (data[data.length - 1] / max) * graphHeight}" r="2" fill="${color}" opacity="0.8" />
+            </svg>`;
+            return svg;
+        }
+
+        function createProgressRing(percentage) {
+            const radius = 20;
+            const circumference = 2 * Math.PI * radius;
+            const offset = circumference - (percentage / 100) * circumference;
+            
+            return `
+                <svg class="progress-ring" viewBox="0 0 50 50">
+                    <circle class="progress-ring-circle" cx="25" cy="25" r="${radius}" stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}" />
+                    <circle class="progress-ring-circle active" cx="25" cy="25" r="${radius}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" />
+                </svg>
+            `;
+        }
+
+        function renderProjectCard(project) {
+            const mrrPercent = (project.mrr.actual / project.mrr.target) * 100;
+            const mrrPercentDisplay = Math.min(100, mrrPercent).toFixed(1);
+            
+            let card = document.createElement('div');
+            card.className = 'project-card';
+            card.style.setProperty('--card-color', project.color);
+            card.style.color = project.color;
+            
+            const weekdayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+            const weekdayBars = project.weekly.map((value, i) => {
+                const isToday = i === 0;
+                const maxWeekly = Math.max(...project.weekly, 1);
+                const barHeight = maxWeekly > 0 ? (value / maxWeekly) * 24 : 2;
+                const barClass = isToday ? 'weekly-bar today' : (value > 0 ? 'weekly-bar filled' : 'weekly-bar');
+                return `
+                    <div class="weekly-day">
+                        <div class="${barClass}" style="height: ${barHeight}px;"></div>
+                        <div class="weekly-label">${weekdayLabels[i]}</div>
+                    </div>
+                `;
+            }).join('');
+
+            const taskSegments = [];
+            for (let i = 0; i < project.tasks.total; i++) {
+                const isDone = i < project.tasks.done;
+                taskSegments.push(`<div class="task-segment ${isDone ? 'done' : ''}"></div>`);
+            }
+
+            const html = `
+                <div class="card-accent"></div>
+                <div class="card-body">
+                    <div class="card-header">
+                        <div class="card-title-section">
+                            <div class="progress-ring-container">
+                                ${createProgressRing(project.milestone.pct)}
+                                <div class="progress-ring-text">${project.initial}</div>
+                            </div>
+                            <div class="title-content">
+                                <div class="title-row">
+                                    <span class="project-name">${project.name}</span>
+                                    <div class="status-badge">
+                                        <span class="status-badge-dot" style="background: ${getStatusColor(project.status)}; box-shadow: 0 0 4px ${getStatusColor(project.status)};"></span>
+                                        <span>${project.status.toUpperCase()}</span>
+                                    </div>
+                                </div>
+                                <div class="last-activity">${project.lastActivity}</div>
+                            </div>
+                        </div>
+                        <div class="sparkline-container">
+                            ${createSparkline(project.spark, project.color)}
+                        </div>
+                    </div>
+
+                    <div class="focus-text">${project.focus}</div>
+
+                    <div class="metric-row">
+                        <div class="metric-label">
+                            <span>${project.mrr.label}</span>
+                            <span class="metric-value">$${project.mrr.actual.toLocaleString()} / $${project.mrr.target.toLocaleString()}</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill gradient-fill" style="width: ${Math.min(100, mrrPercent)}%;"></div>
+                        </div>
+                        <div style="text-align: right; font-size: 0.75rem; color: #666; margin-top: 0.2rem;">${mrrPercentDisplay}%</div>
+                    </div>
+
+                    <div class="metric-row">
+                        <div class="metric-label">
+                            <span>${project.milestone.label}</span>
+                            <span class="metric-value">${project.milestone.pct}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${project.milestone.pct}%; background: currentColor; filter: drop-shadow(0 0 3px currentColor);"></div>
+                        </div>
+                    </div>
+
+                    <div class="metric-row">
+                        <div class="metric-label">
+                            <span>TASKS</span>
+                            <span class="metric-value">${project.tasks.done} / ${project.tasks.total}</span>
+                        </div>
+                        <div class="tasks-bar">
+                            ${taskSegments.join('')}
+                        </div>
+                    </div>
+
+                    <div class="metric-row">
+                        <div class="metric-label">WEEKLY ACTIVITY</div>
+                        <div class="weekly-chart">
+                            ${weekdayBars}
+                        </div>
+                    </div>
+
+                    <div class="next-action">
+                        <strong>→ ${project.nextAction}</strong>
+                    </div>
+                </div>
+            `;
+            
+            card.innerHTML = html;
+            return card;
+        }
+
+        function renderActivityLog() {
+            const container = document.getElementById('activityLog');
+            container.innerHTML = ACTIVITY_LOG.map(item => `
+                <div class="activity-item ${item.type}">
+                    <div class="activity-time">${item.time}</div>
+                    <div class="activity-content">
+                        <span class="activity-label">${item.label}</span>
+                        <span class="activity-text"> ${item.text}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderPortfolioStats() {
+            const container = document.getElementById('portfolioStats');
+            container.innerHTML = PORTFOLIO.stats.map(stat => `
+                <div class="stat-item">
+                    <div class="stat-label">${stat.label}</div>
+                    <div class="stat-value">${stat.value}</div>
+                </div>
+            `).join('');
+        }
+
+        function updateShiftStatus() {
+            const now = new Date();
+            const hour = now.getHours();
+            
+            let shiftLabel = 'Off Shift';
+            let shiftClass = 'off';
+            
+            if (hour >= 12 && hour < 20) {
+                shiftLabel = 'Pre-Shift';
+                shiftClass = 'pre';
+            } else if (hour >= 20 || hour < 4) {
+                shiftLabel = 'At Work';
+                shiftClass = 'at';
+            }
+            
+            document.getElementById('shiftStatus').textContent = shiftLabel;
+            document.getElementById('shiftStatusFull').textContent = shiftLabel;
+            document.getElementById('shiftStatusFull').className = `shift-indicator ${shiftClass}`;
+        }
+
+        function init() {
+            // Render projects
+            const grid = document.getElementById('projectsGrid');
+            PROJECTS.forEach(project => {
+                grid.appendChild(renderProjectCard(project));
+            });
+
+            // Render activity log
+            renderActivityLog();
+
+            // Render portfolio stats
+            renderPortfolioStats();
+
+            // Update shift status
+            updateShiftStatus();
+
+            // Update API usage bar color
+            const apiUsagePercent = (SYSTEM.apiUsage.used / SYSTEM.apiUsage.limit) * 100;
+            const apiFill = document.getElementById('apiUsageFill');
+            if (apiUsagePercent >= 80) {
+                apiFill.classList.add('warning');
+            }
+            if (apiUsagePercent >= 100) {
+                apiFill.classList.add('critical');
+            }
+            apiFill.style.width = `${Math.min(100, apiUsagePercent)}%`;
+        }
+
+        // Initialize on load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Update shift status every minute
+        setInterval(updateShiftStatus, 60000);
+    </script>
+</body>
+</html>
