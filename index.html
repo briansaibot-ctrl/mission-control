@@ -1,1279 +1,909 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Mission Control</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #080808;
-      --card: #0f0f0f;
-      --border: #1e1e1e;
-      --border-hover: #2a2a2a;
-      --text: #e8e8e8;
-      --muted: #666;
-      --dimmed: #444;
+      --bg:        #080808;
+      --surface:   #111111;
+      --surface2:  #181818;
+      --border:    rgba(255,255,255,0.07);
+      --border2:   rgba(255,255,255,0.12);
+      --text:      #f0f0f0;
+      --text2:     #888;
+      --text3:     #555;
+      --radius:    16px;
+      --radius-sm: 10px;
+    }
+
+    [data-theme="light"] {
+      --bg:       #f5f5f7;
+      --surface:  #ffffff;
+      --surface2: #f0f0f2;
+      --border:   rgba(0,0,0,0.08);
+      --border2:  rgba(0,0,0,0.14);
+      --text:     #111111;
+      --text2:    #666;
+      --text3:    #aaa;
     }
 
     html, body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Space Mono', monospace;
-      font-weight: 400;
-      font-size: 12px;
-      line-height: 1.4;
-      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      min-height: 100dvh;
+      -webkit-font-smoothing: antialiased;
     }
 
-    body {
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* Header */
+    /* ── HEADER ─────────────────────────────────────── */
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(8,8,8,0.75);
       border-bottom: 1px solid var(--border);
-      gap: 16px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
-    .header-left h1 {
-      font-size: 24px;
+    [data-theme="light"] header {
+      background: rgba(245,245,247,0.8);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #30d158;
+      box-shadow: 0 0 8px #30d15880;
+      flex-shrink: 0;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 8px #30d15880; }
+      50%       { opacity: 0.7; box-shadow: 0 0 14px #30d158cc; }
+    }
+
+    header h1 {
+      font-size: 17px;
       font-weight: 700;
+      letter-spacing: -0.3px;
       color: var(--text);
-      margin-bottom: 4px;
-    }
-
-    .header-left p {
-      font-size: 10px;
-      color: var(--muted);
     }
 
     .header-right {
       display: flex;
-      gap: 12px;
       align-items: center;
+      gap: 10px;
     }
 
-    .pill {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 11px;
-      color: var(--text);
-      padding: 4px 8px;
-      background: var(--card);
+    .theme-toggle {
+      background: var(--surface2);
       border: 1px solid var(--border);
-      border-radius: 3px;
-    }
-
-    .alert-badge {
-      background: #8b3333;
-      color: #fff;
-      min-width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 9px;
-      font-weight: 700;
-    }
-
-    /* Alert Banner */
-    #alertBanner {
-      display: none;
-      background: #2a1515;
-      border-bottom: 1px solid #8b3333;
-      padding: 12px 16px;
-      gap: 12px;
-      flex-direction: column;
-    }
-
-    #alertBanner.visible {
-      display: flex;
-    }
-
-    .alert-item {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      padding: 8px;
-      border-left: 2px solid #8b3333;
-      padding-left: 10px;
-    }
-
-    .alert-time {
-      font-size: 10px;
-      color: var(--muted);
-      flex-shrink: 0;
-      min-width: 40px;
-    }
-
-    .alert-message {
-      flex: 1;
-      font-size: 11px;
-      color: var(--text);
-    }
-
-    .alert-dismiss {
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 16px;
-      flex-shrink: 0;
-      line-height: 1;
-    }
-
-    .alert-dismiss:hover {
-      color: var(--text);
-    }
-
-    /* Main Content */
-    main {
-      flex: 1;
-      padding: 16px;
-    }
-
-    /* Project Grid */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    @media (min-width: 900px) {
-      .projects-grid {
-        grid-template-columns: repeat(3, 1fr);
-        margin-bottom: 32px;
-      }
-
-      .projects-grid .project-card:nth-child(4),
-      .projects-grid .project-card:nth-child(5) {
-        grid-column: auto;
-      }
-
-      .projects-grid {
-        align-items: start;
-      }
-
-      .projects-grid > :nth-child(4) {
-        grid-column: 2 / 3;
-        grid-row: 2;
-      }
-
-      .projects-grid > :nth-child(5) {
-        grid-column: 3 / 4;
-        grid-row: 2;
-      }
-    }
-
-    /* Project Card */
-    .project-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-top: 2px solid;
-      border-radius: 4px;
-      padding: 16px;
-      position: relative;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      animation: slideIn 0.5s ease forwards;
-      opacity: 0;
-      transform: translateY(12px);
-    }
-
-    @keyframes slideIn {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .project-card:nth-child(1) { animation-delay: 0s; border-top-color: rgba(94, 173, 212, 0.7); }
-    .project-card:nth-child(2) { animation-delay: 0.1s; border-top-color: rgba(201, 150, 74, 0.7); }
-    .project-card:nth-child(3) { animation-delay: 0.2s; border-top-color: rgba(139, 107, 177, 0.7); }
-    .project-card:nth-child(4) { animation-delay: 0.3s; border-top-color: rgba(74, 158, 122, 0.7); }
-    .project-card:nth-child(5) { animation-delay: 0.4s; border-top-color: rgba(107, 107, 177, 0.7); }
-
-    .project-card:hover {
-      border-color: var(--border-hover);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
-      position: relative;
-    }
-
-    .card-title {
+      color: var(--text2);
+      border-radius: 8px;
+      padding: 6px 10px;
       font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
+      cursor: pointer;
+      transition: background 0.15s;
+      line-height: 1;
+    }
+    .theme-toggle:hover { background: var(--border2); }
+
+    .last-updated {
+      font-size: 12px;
+      color: var(--text3);
+      display: none;
+    }
+    @media(min-width:600px){ .last-updated { display: block; } }
+
+    /* ── MAIN ────────────────────────────────────────── */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
     }
 
-    .status-badge {
-      font-size: 10px;
-      font-weight: 700;
+    /* ── SECTION LABEL ───────────────────────────────── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
       letter-spacing: 0.08em;
-      padding: 0;
-      background: none;
-      border: none;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 14px;
+      padding-left: 2px;
     }
 
-    .status-badge.active { color: #7a9f6f; }
-    .status-badge.launching { color: #b89f5f; }
-    .status-badge.blocked { color: #8b5555; }
-    .status-badge.on-hold { color: var(--muted); }
+    /* ── PORTFOLIO HERO ──────────────────────────────── */
+    .portfolio-hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
 
-    .milestone-pct {
-      position: absolute;
-      top: 0;
-      right: 0;
-      font-size: 28px;
-      font-weight: 700;
+    .hero-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text2);
+      margin-bottom: 4px;
+    }
+
+    .hero-mrr {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      color: var(--text);
       line-height: 1;
     }
 
-    .card-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 12px 0;
+    .hero-target {
+      font-size: 13px;
+      color: var(--text3);
+      margin-top: 6px;
     }
 
-    .focus-line {
-      border-left: 2px solid;
-      padding-left: 12px;
-      margin-bottom: 12px;
-      font-size: 12px;
-      color: var(--muted);
+    .hero-target span {
+      color: #30d158;
+      font-weight: 600;
     }
 
-    .stats-row {
+    .hero-progress-wrap {
+      flex: 1;
+      min-width: 180px;
+      max-width: 320px;
+    }
+
+    .hero-progress-labels {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      font-size: 10px;
+      font-size: 11px;
+      color: var(--text3);
+      margin-bottom: 6px;
     }
 
-    .stats-label {
-      color: var(--muted);
-    }
-
-    .progress-bar {
-      flex: 1;
-      height: 1px;
-      background: var(--dimmed);
-      margin: 0 12px;
-      position: relative;
+    .progress-track {
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 99px;
+      overflow: hidden;
     }
 
     .progress-fill {
       height: 100%;
-      background: var(--muted);
+      border-radius: 99px;
+      background: linear-gradient(90deg, #30d158, #34aadc);
+      transition: width 0.8s cubic-bezier(.23,1,.32,1);
     }
 
-    .mrr-row {
-      margin-bottom: 12px;
+    /* ── PROJECTS GRID ───────────────────────────────── */
+    .projects-section { margin-bottom: 32px; }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
     }
 
-    .mrr-value {
-      font-size: 24px;
+    @media(min-width: 700px) {
+      .projects-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(min-width: 1000px) {
+      .projects-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    /* ── PROJECT CARD ────────────────────────────────── */
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      cursor: default;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+
+    .project-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      border-color: var(--border2);
+    }
+
+    /* Accent glow strip at top */
+    .card-glow {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    /* Card sections */
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .card-name {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .card-tagline {
+      font-size: 13px;
+      color: var(--text2);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    /* Status pill */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 99px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .pill-idea      { background: rgba(136,136,136,0.15); color: #888; }
+    .pill-idea .status-dot { background: #888; }
+
+    .pill-building  { background: rgba(52,170,220,0.15); color: #34aadc; }
+    .pill-building .status-dot { background: #34aadc; animation: pulse 1.5s ease-in-out infinite; }
+
+    .pill-testing   { background: rgba(255,204,0,0.15); color: #f0b429; }
+    .pill-testing .status-dot { background: #f0b429; }
+
+    .pill-launching { background: rgba(255,149,0,0.15); color: #ff9500; }
+    .pill-launching .status-dot { background: #ff9500; animation: pulse 1.5s ease-in-out infinite; }
+
+    .pill-live      { background: rgba(48,209,88,0.15); color: #30d158; }
+    .pill-live .status-dot { background: #30d158; animation: pulse 2s ease-in-out infinite; }
+
+    /* Progress */
+    .card-progress {
+      margin-bottom: 16px;
+    }
+
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 7px;
+    }
+
+    .progress-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .progress-pct {
+      font-size: 13px;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 2px;
     }
 
-    .mrr-label {
-      font-size: 10px;
-      color: var(--muted);
+    .card-progress .progress-track {
+      height: 5px;
     }
 
-    .task-bar {
+    /* Divider */
+    .card-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 16px 0;
+    }
+
+    /* Done list */
+    .done-list {
+      list-style: none;
       display: flex;
-      gap: 2px;
-      margin-bottom: 12px;
-      height: 8px;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
     }
 
-    .task-segment {
-      flex: 1;
-      background: var(--dimmed);
-      border-radius: 1px;
+    .done-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.4;
     }
 
-    .task-segment.done {
-      background: currentColor;
+    .done-list li::before {
+      content: '✓';
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
       opacity: 0.6;
     }
 
-    .weekly-chart {
-      display: flex;
-      gap: 3px;
-      margin-bottom: 12px;
-      align-items: flex-end;
-      height: 20px;
-      font-size: 9px;
-      color: var(--muted);
-    }
-
-    .weekly-bar {
-      flex: 1;
-      background: var(--dimmed);
-      border-radius: 1px;
-      position: relative;
-      cursor: pointer;
-    }
-
-    .weekly-bar.today {
-      background: currentColor;
-      opacity: 0.5;
-    }
-
-    .sparkline {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      width: 60px;
-      height: 24px;
-    }
-
-    .sparkline-line {
-      stroke: currentColor;
-      stroke-width: 1.5;
-      fill: none;
-      opacity: 0.4;
-    }
-
+    /* Next action */
     .next-action {
-      font-size: 11px;
-      color: var(--muted);
-      font-style: italic;
-      padding-top: 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .next-icon {
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    /* Metric badge */
+    .metric-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      padding-top: 14px;
       border-top: 1px solid var(--border);
     }
 
-    .last-activity {
-      font-size: 10px;
-      color: var(--muted);
-      position: absolute;
-      top: 48px;
-      right: 16px;
+    .metric-label {
+      font-size: 11px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
-    /* Bottom Panels */
+    .metric-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* ── BOTTOM PANELS ───────────────────────────────── */
+    .panels-section { }
+
     .panels-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 16px;
+      gap: 12px;
     }
 
-    @media (min-width: 900px) {
-      .panels-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-      }
+    @media(min-width: 700px) {
+      .panels-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media(min-width: 1000px) {
+      .panels-grid { grid-template-columns: repeat(3, 1fr); }
     }
 
     .panel {
-      background: var(--card);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 16px;
-      position: relative;
-      animation: slideIn 0.5s ease forwards;
-      opacity: 0;
-      transform: translateY(12px);
+      border-radius: var(--radius);
+      padding: 20px;
     }
-
-    .panel:nth-of-type(1) { animation-delay: 0.5s; }
-    .panel:nth-of-type(2) { animation-delay: 0.6s; }
-    .panel:nth-of-type(3) { animation-delay: 0.7s; }
-    .panel:nth-of-type(4) { animation-delay: 0.8s; }
 
     .panel-title {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--text);
-      margin-bottom: 12px;
-      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+      letter-spacing: -0.1px;
     }
 
-    .panel-updated {
-      position: absolute;
-      bottom: 12px;
-      right: 16px;
-      font-size: 9px;
-      color: var(--muted);
-    }
-
-    /* Alerts Panel */
-    .nominal {
-      font-size: 11px;
-      color: #7a9f6f;
-    }
-
-    .alert-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-
-    .alert-item-panel {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-      padding: 8px;
-      border-left: 2px solid #8b3333;
-      padding-left: 10px;
-      background: rgba(139, 51, 51, 0.1);
-      border-radius: 2px;
-    }
-
-    .alert-item-time {
-      font-size: 10px;
-      color: var(--muted);
-      flex-shrink: 0;
-      min-width: 50px;
-    }
-
-    .alert-item-text {
-      flex: 1;
-      font-size: 11px;
-      color: var(--text);
-    }
-
-    .alert-item-dismiss {
-      cursor: pointer;
-      color: var(--muted);
-      font-size: 14px;
-      flex-shrink: 0;
-      line-height: 1;
-    }
-
-    .alert-item-dismiss:hover {
-      color: var(--text);
-    }
-
-    /* Activity Panel */
+    /* Activity */
     .activity-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-bottom: 24px;
-      max-height: 200px;
-      overflow-y: auto;
+      gap: 10px;
     }
 
     .activity-item {
       display: flex;
-      gap: 8px;
-      font-size: 11px;
-      align-items: center;
-      transition: opacity 0.3s;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .activity-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+
+    .activity-body { flex: 1; }
+
+    .activity-text {
+      font-size: 13px;
+      color: var(--text);
+      line-height: 1.4;
     }
 
     .activity-time {
-      color: var(--muted);
-      flex-shrink: 0;
-      min-width: 40px;
-    }
-
-    .activity-tag {
-      padding: 2px 6px;
-      border-radius: 2px;
-      font-size: 9px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-
-    .activity-tag.memory { background: rgba(94, 173, 212, 0.2); color: #5eadd4; }
-    .activity-tag.deploy { background: rgba(139, 107, 177, 0.2); color: #8b6bb1; }
-    .activity-tag.crm { background: rgba(94, 173, 212, 0.2); color: #5eadd4; }
-    .activity-tag.intel { background: rgba(201, 150, 74, 0.2); color: #c9964a; }
-    .activity-tag.system { background: rgba(136, 136, 136, 0.2); color: #888; }
-    .activity-tag.jarvis { background: rgba(139, 107, 177, 0.2); color: #8b6bb1; }
-
-    .activity-text {
-      flex: 1;
-      color: var(--text);
-    }
-
-    /* Spending Panel */
-    .spending-section {
-      margin-bottom: 12px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .spending-section:last-of-type {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .spending-title {
-      font-size: 10px;
-      color: var(--muted);
-      margin-bottom: 8px;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-    }
-
-    .spending-total {
-      font-size: 24px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-
-    .spending-stat {
-      display: flex;
-      justify-content: space-between;
-      font-size: 10px;
-      color: var(--muted);
-      margin-bottom: 4px;
-    }
-
-    .spending-stat-label {
-      flex: 1;
-    }
-
-    .spending-stat-value {
-      text-align: right;
-    }
-
-    .spending-item {
-      display: flex;
-      justify-content: space-between;
       font-size: 11px;
-      color: var(--text);
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border);
+      color: var(--text3);
+      margin-top: 1px;
     }
 
-    .spending-item:last-child {
-      border-bottom: none;
-    }
-
-    .spending-item-name {
-      flex: 1;
-    }
-
-    .spending-item-amount {
-      text-align: right;
-      flex-shrink: 0;
-    }
-
-    .spending-net {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 8px 0;
-      border-top: 1px solid var(--border);
-      margin-top: 8px;
-    }
-
-    .spending-net.positive .spending-net-amount {
-      color: #7a9f6f;
-    }
-
-    .spending-net.negative .spending-net-amount {
-      color: #8b5555;
-    }
-
-    /* System Panel */
-    .system-section {
-      margin-bottom: 12px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .system-section:last-of-type {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .uptime-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      padding: 6px 0;
-    }
-
-    .uptime-service {
-      flex: 1;
-    }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .status-dot.up {
-      background: #7a9f6f;
-    }
-
-    .status-dot.down {
-      background: #8b5555;
-    }
-
-    .api-usage-label {
-      font-size: 10px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-
-    .api-usage-bar {
-      width: 100%;
-      height: 2px;
-      background: var(--dimmed);
-      border-radius: 1px;
-      overflow: hidden;
-      margin-bottom: 8px;
-    }
-
-    .api-usage-fill {
-      height: 100%;
-      background: var(--muted);
-    }
-
-    .api-usage-fill.high {
-      background: #8b3333;
-    }
-
-    .api-cost-items {
+    /* System status */
+    .status-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      font-size: 10px;
-      color: var(--muted);
-      margin-bottom: 8px;
+      gap: 10px;
     }
 
-    .cron-info {
-      font-size: 11px;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-
-    .model-pill {
-      display: inline-block;
-      background: var(--border);
-      padding: 4px 8px;
-      border-radius: 3px;
-      font-size: 9px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .memory-info {
-      font-size: 10px;
-      color: var(--muted);
-    }
-
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 12px 16px;
-      font-size: 9px;
-      color: var(--muted);
-      border-top: 1px solid var(--border);
+    .status-item {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 16px;
+      justify-content: space-between;
     }
 
-    .footer-left {
-      flex: 1;
-      text-align: left;
+    .status-name {
+      font-size: 13px;
+      color: var(--text2);
     }
 
-    .footer-right {
+    .status-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-indicator.online  { color: #30d158; }
+    .status-indicator.offline { color: #ff453a; }
+    .status-indicator.pending { color: #ff9500; }
+
+    .indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .status-indicator.online .indicator-dot {
+      animation: pulse 2.5s ease-in-out infinite;
+      box-shadow: 0 0 6px currentColor;
+    }
+
+    /* MRR breakdown */
+    .mrr-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .mrr-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .mrr-item-name {
+      font-size: 13px;
+      color: var(--text2);
       flex: 1;
+    }
+
+    .mrr-item-bar {
+      flex: 2;
+      height: 4px;
+      background: var(--surface2);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .mrr-item-fill {
+      height: 100%;
+      border-radius: 99px;
+    }
+
+    .mrr-item-val {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      min-width: 40px;
       text-align: right;
     }
 
-    .keyboard-hint {
-      font-size: 8px;
-      color: var(--dimmed);
+    /* ── ANIMATIONS ──────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* Scrollbar styling */
-    ::-webkit-scrollbar {
-      width: 6px;
+    .project-card, .panel, .portfolio-hero {
+      opacity: 0;
+      animation: fadeUp 0.5s ease forwards;
     }
 
-    ::-webkit-scrollbar-track {
-      background: var(--bg);
-    }
+    .portfolio-hero                 { animation-delay: 0.05s; }
+    .project-card:nth-child(1)      { animation-delay: 0.10s; }
+    .project-card:nth-child(2)      { animation-delay: 0.15s; }
+    .project-card:nth-child(3)      { animation-delay: 0.20s; }
+    .project-card:nth-child(4)      { animation-delay: 0.25s; }
+    .project-card:nth-child(5)      { animation-delay: 0.30s; }
+    .panel:nth-child(1)             { animation-delay: 0.35s; }
+    .panel:nth-child(2)             { animation-delay: 0.40s; }
+    .panel:nth-child(3)             { animation-delay: 0.45s; }
 
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--border-hover);
-    }
+    /* ── SCROLLBAR ───────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 99px; }
   </style>
 </head>
 <body>
-  <!-- Header -->
+
+  <!-- HEADER -->
   <header>
     <div class="header-left">
-      <h1>MISSION CONTROL</h1>
-      <p>Nova · Brian Altmann · Las Vegas</p>
+      <div class="logo-dot"></div>
+      <h1>Mission Control</h1>
     </div>
     <div class="header-right">
-      <div id="weatherPill" class="pill">
-        <span id="weatherIcon">—</span>
-        <span id="weatherTemp">—</span>
-      </div>
-      <div id="shiftPill" class="pill" style="display: none;">
-        <span id="shiftStatus">—</span>
-      </div>
-      <div id="alertBadge" class="alert-badge" style="display: none;"></div>
+      <span class="last-updated" id="lastUpdated">—</span>
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">☀️</button>
     </div>
   </header>
 
-  <!-- Alert Banner -->
-  <div id="alertBanner"></div>
-
-  <!-- Main Content -->
   <main>
-    <!-- Project Cards -->
-    <div class="projects-grid" id="projectsGrid"></div>
 
-    <!-- Bottom Panels -->
-    <div class="panels-grid">
-      <div class="panel">
-        <div class="panel-title">ALERTS</div>
-        <div id="alertsPanel"></div>
-        <div class="panel-updated">
-          <span id="alertsPanelTime">—</span>
-        </div>
+    <!-- PORTFOLIO HERO -->
+    <div class="portfolio-hero">
+      <div>
+        <div class="hero-label">Portfolio MRR</div>
+        <div class="hero-mrr">$0</div>
+        <div class="hero-target">Target: <span>$50,000 / mo</span></div>
       </div>
-
-      <div class="panel">
-        <div class="panel-title">NOVA ACTIVITY</div>
-        <div id="activityPanel"></div>
-        <div class="panel-updated">
-          <span id="activityPanelTime">—</span>
+      <div class="hero-progress-wrap">
+        <div class="hero-progress-labels">
+          <span>0%</span>
+          <span>Goal: $50K</span>
         </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-title">SPENDING</div>
-        <div id="spendingPanel"></div>
-        <div class="panel-updated">
-          <span id="spendingPanelTime">—</span>
-        </div>
-      </div>
-
-      <div class="panel">
-        <div class="panel-title">SYSTEM</div>
-        <div id="systemPanel"></div>
-        <div class="panel-updated">
-          <span id="systemPanelTime">—</span>
+        <div class="progress-track">
+          <div class="progress-fill" style="width: 0%;"></div>
         </div>
       </div>
     </div>
+
+    <!-- PROJECTS -->
+    <div class="projects-section">
+      <div class="section-label" style="margin-top:28px;">Projects</div>
+      <div class="projects-grid" id="projectsGrid"></div>
+    </div>
+
+    <!-- BOTTOM PANELS -->
+    <div class="panels-section">
+      <div class="section-label" style="margin-top:4px;">Status</div>
+      <div class="panels-grid">
+
+        <!-- Activity -->
+        <div class="panel">
+          <div class="panel-title">Recent Activity</div>
+          <div class="activity-list" id="activityList"></div>
+        </div>
+
+        <!-- System Status -->
+        <div class="panel">
+          <div class="panel-title">System Status</div>
+          <div class="status-list" id="statusList"></div>
+        </div>
+
+        <!-- MRR Breakdown -->
+        <div class="panel">
+          <div class="panel-title">Revenue Breakdown</div>
+          <div class="mrr-rows" id="mrrRows"></div>
+        </div>
+
+      </div>
+    </div>
+
   </main>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-left">MISSION CONTROL · Nova</div>
-    <div>Last sync: <span id="lastSync">—</span></div>
-    <div class="footer-right keyboard-hint">R refresh · 1-5 project · A alerts</div>
-  </footer>
-
   <script>
-    // Project data
+    // ── DATA ────────────────────────────────────────────
     const PROJECTS = [
       {
-        id: "liv-crm", name: "LIV CRM", initial: "L", color: "#5eadd4",
-        status: "active",
-        mrr: { actual: 3082, label: "Monthly Revenue" },
-        milestone: { label: "LIFETIME SPEND FIX", pct: 100 },
-        tasks: { done: 8, total: 10 },
-        lastActivity: "2h",
-        focus: "670 guest profiles · $3.08M revenue tracked",
-        nextAction: "Upload 2024 & 2026 data for YOY comparison",
-        spark: [20,45,30,60,40,80,65,90],
-        weekly: [3,5,2,8,6,1,4]
+        id: 'liv-intel',
+        name: 'LIV Intel Social',
+        tagline: 'Competitive intelligence monitor for LIV Nightclub',
+        status: 'building',
+        statusLabel: 'Building',
+        progress: 70,
+        color: '#f0b429',
+        done: [
+          'Social monitoring live & running',
+          '4-hourly competitor alert system built',
+          'PWA dashboard with real-time alerts',
+        ],
+        next: 'Wire live analytics charts to PWA dashboard',
+        metricLabel: 'Alerts / week',
+        metricValue: '—',
+        mrr: 0,
+        updated: 'Apr 13',
       },
       {
-        id: "liv-intel", name: "LIV INTEL", initial: "I", color: "#c9964a",
-        status: "active",
-        mrr: { actual: 0, label: "Revenue" },
-        milestone: { label: "PWA v18 LIVE", pct: 100 },
-        tasks: { done: 12, total: 14 },
-        lastActivity: "4h",
-        focus: "Social competitor monitor · 10 venues · 3x daily",
-        nextAction: "Wire live analytics data to PWA charts",
-        spark: [10,30,20,50,35,70,55,85],
-        weekly: [2,4,1,6,5,0,3]
+        id: 'jarvis',
+        name: 'JARVIS Voice',
+        tagline: 'Wake-word voice assistant — Hey Jarvis → Claude → ElevenLabs',
+        status: 'building',
+        statusLabel: 'Building',
+        progress: 85,
+        color: '#bf5af2',
+        done: [
+          'Full voice pipeline built (wake word + Whisper + TTS)',
+          'ElevenLabs George voice ready',
+          'launchd auto-start configured',
+        ],
+        next: 'Plug in USB mic to go live',
+        metricLabel: 'Status',
+        metricValue: 'Needs mic',
+        mrr: 0,
+        updated: 'Apr 13',
       },
       {
-        id: "jarvis", name: "JARVIS VOICE", initial: "J", color: "#8b6bb1",
-        status: "launching",
-        mrr: { actual: 0, label: "Revenue" },
-        milestone: { label: "AWAITING MIC", pct: 85 },
-        tasks: { done: 7, total: 8 },
-        lastActivity: "30m",
-        focus: "Hey Jarvis · ElevenLabs George · Haiku + Flash",
-        nextAction: "Plug in USB mic → run setup.sh → go live",
-        spark: [0,0,10,20,40,60,75,85],
-        weekly: [0,0,0,0,5,8,9]
+        id: 'brandguard',
+        name: 'BrandGuard Social',
+        tagline: 'AI competitive intelligence SaaS for e-commerce brands',
+        status: 'launching',
+        statusLabel: 'Launching',
+        progress: 40,
+        color: '#ff9500',
+        done: [
+          'Landing page built — 3 pricing tiers',
+          'Infrastructure ready (built on LIV Intel modules)',
+          'Pricing set: $199 – $499 / month',
+        ],
+        next: 'Create Stripe account + set up 3 subscription products',
+        metricLabel: 'MRR',
+        metricValue: '$0',
+        mrr: 0,
+        updated: 'Apr 10',
       },
       {
-        id: "epn", name: "EPN", initial: "E", color: "#4a9e7a",
-        status: "launching",
-        mrr: { actual: 0, label: "Revenue" },
-        milestone: { label: "FOUNDATION", pct: 10 },
-        tasks: { done: 1, total: 10 },
-        lastActivity: "—",
-        focus: "B2B lead intelligence platform",
-        nextAction: "Define MVP scope and data sources",
-        spark: [0,0,0,0,0,0,5,10],
-        weekly: [0,0,0,0,0,0,1]
+        id: 'leaseowl',
+        name: 'LeaseOwl',
+        tagline: 'Business idea — details coming soon',
+        status: 'launching',
+        statusLabel: 'Launching',
+        progress: 10,
+        color: '#5e5ce6',
+        done: [
+          'Concept identified',
+        ],
+        next: 'Define core product and first build',
+        metricLabel: 'MRR',
+        metricValue: '$0',
+        mrr: 0,
+        updated: 'Apr 13',
       },
       {
-        id: "leaseowl", name: "LEASEOWL", initial: "O", color: "#6b6bb1",
-        status: "launching",
-        mrr: { actual: 0, label: "Revenue" },
-        milestone: { label: "FOUNDATION", pct: 5 },
-        tasks: { done: 0, total: 10 },
-        lastActivity: "—",
-        focus: "Real estate lease intelligence",
-        nextAction: "Define MVP scope and target market",
-        spark: [0,0,0,0,0,0,0,5],
-        weekly: [0,0,0,0,0,0,0]
-      }
+        id: 'epn',
+        name: 'EPN',
+        tagline: 'Business idea — details coming soon',
+        status: 'idea',
+        statusLabel: 'Idea',
+        progress: 5,
+        color: '#30d158',
+        done: [
+          'Concept identified',
+        ],
+        next: 'Define and scope the idea',
+        metricLabel: null,
+        metricValue: null,
+        mrr: 0,
+        updated: 'Apr 13',
+      },
     ];
 
-    // State
-    let data = {
-      alerts: [],
-      spending: null,
-      system: null,
-      activity: [],
-      weather: null
-    };
+    const ACTIVITY = [
+      { color: '#bf5af2', text: 'JARVIS Voice pipeline built — waiting on USB mic', time: 'Apr 13, 8pm' },
+      { color: '#f0b429', text: 'Mission Control redesigned with Apple-style UI', time: 'Apr 13, 8pm' },
+      { color: '#34aadc', text: 'LIV CRM lifetime spend fixed — 670 guests, $3.08M verified', time: 'Apr 13, 2pm' },
+      { color: '#ff9500', text: 'BrandGuard Social landing page built', time: 'Apr 10' },
+      { color: '#f0b429', text: 'LIV Intel Social — 4-hourly monitor live', time: 'Apr 9' },
+    ];
 
-    let dismissedAlerts = new Set(JSON.parse(localStorage.getItem('dismissedAlerts') || '[]'));
+    const SYSTEM_STATUS = [
+      { name: 'LIV CRM Dashboard',  status: 'online',  label: 'Online' },
+      { name: 'n8n Workflows',       status: 'online',  label: 'Online' },
+      { name: 'WhatsApp Gateway',    status: 'online',  label: 'Online' },
+      { name: 'JARVIS Voice',        status: 'pending', label: 'Needs mic' },
+      { name: 'Mac mini Node',       status: 'online',  label: 'Online' },
+    ];
 
-    // Format time
-    function formatTime(date) {
-      const h = String(date.getHours()).padStart(2, '0');
-      const m = String(date.getMinutes()).padStart(2, '0');
-      return `${h}:${m}`;
-    }
-
-    // Format date for panel timestamps
-    function formatPanelTime(date) {
-      const h = String(date.getHours()).padStart(2, '0');
-      const m = String(date.getMinutes()).padStart(2, '0');
-      const s = String(date.getSeconds()).padStart(2, '0');
-      return `${h}:${m}:${s}`;
-    }
-
-    // Get shift status based on time
-    function getShiftStatus() {
-      const now = new Date();
-      const hour = now.getHours();
-      if (hour >= 12 && hour < 20) return "PRE-SHIFT";
-      if (hour >= 20 && hour < 4) return "AT WORK";
-      return "OFF SHIFT";
-    }
-
-    // Get weather icon
-    function getWeatherIcon(condition, hour) {
-      if (hour >= 6 && hour < 20) {
-        if (condition.includes("Clear") || condition.includes("Sunny")) return "☀️";
-        if (condition.includes("Cloud")) return "⛅";
-        if (condition.includes("Rain")) return "🌧️";
-        return "☀️";
-      } else {
-        return "🌙";
-      }
-    }
-
-    // Fetch all data
-    async function fetchData() {
-      try {
-        const [alerts, spending, system, activity, weather] = await Promise.all([
-          fetch('data/alerts.json').then(r => r.json()).catch(() => []),
-          fetch('data/spending.json').then(r => r.json()).catch(() => null),
-          fetch('data/system.json').then(r => r.json()).catch(() => null),
-          fetch('data/activity.json').then(r => r.json()).catch(() => []),
-          fetch('data/weather.json').then(r => r.json()).catch(() => null)
-        ]);
-
-        data.alerts = (alerts && alerts.alerts) ? alerts.alerts : (Array.isArray(alerts) ? alerts : []);
-        data.spending = spending;
-        data.system = system;
-        data.activity = (activity && activity.items) ? activity.items : (Array.isArray(activity) ? activity : []);
-        data.weather = weather;
-
-        updateUI();
-      } catch (err) {
-        console.error('Error fetching data:', err);
-      }
-    }
-
-    // Update UI
-    function updateUI() {
-      updateHeader();
-      updateAlertBanner();
-      updateProjectCards();
-      updateAlertPanel();
-      updateActivityPanel();
-      updateSpendingPanel();
-      updateSystemPanel();
-      updateFooter();
-    }
-
-    // Update header
-    function updateHeader() {
-      const now = new Date();
-      
-      // Weather
-      if (data.weather) {
-        const icon = getWeatherIcon(data.weather.condition || '', now.getHours());
-        document.getElementById('weatherIcon').textContent = icon;
-        document.getElementById('weatherTemp').textContent = `${data.weather.temp_f}°F`;
-      }
-
-      // Shift
-      const shift = getShiftStatus();
-      const shiftPill = document.getElementById('shiftPill');
-      document.getElementById('shiftStatus').textContent = shift;
-      shiftPill.style.display = 'flex';
-
-      // Alert badge
-      const activeAlerts = data.alerts.filter(a => !dismissedAlerts.has(a.id || a.timestamp)).length;
-      const alertBadge = document.getElementById('alertBadge');
-      if (activeAlerts > 0) {
-        alertBadge.textContent = activeAlerts;
-        alertBadge.style.display = 'flex';
-      } else {
-        alertBadge.style.display = 'none';
-      }
-    }
-
-    // Update alert banner
-    function updateAlertBanner() {
-      const banner = document.getElementById('alertBanner');
-      const activeAlerts = data.alerts.filter(a => !dismissedAlerts.has(a.id || a.timestamp));
-
-      if (activeAlerts.length === 0) {
-        banner.classList.remove('visible');
-        return;
-      }
-
-      banner.classList.add('visible');
-      banner.innerHTML = activeAlerts.map((alert, idx) => `
-        <div class="alert-item">
-          <div class="alert-time">${alert.timestamp || '—'}</div>
-          <div class="alert-message">${alert.message || alert.text || ''}</div>
-          <div class="alert-dismiss" onclick="dismissAlert('${alert.id || alert.timestamp}')">✕</div>
-        </div>
-      `).join('');
-    }
-
-    // Dismiss alert
-    function dismissAlert(id) {
-      dismissedAlerts.add(id);
-      localStorage.setItem('dismissedAlerts', JSON.stringify([...dismissedAlerts]));
-      updateAlertBanner();
-      updateHeader();
-    }
-
-    // Update project cards
-    function updateProjectCards() {
+    // ── RENDER PROJECTS ─────────────────────────────────
+    function renderProjects() {
       const grid = document.getElementById('projectsGrid');
       grid.innerHTML = PROJECTS.map(p => {
-        const tasks = Array(p.tasks.total).fill(0).map((_, i) => i < p.tasks.done);
-        const today = new Date().getDay();
-        const todayIndex = today === 0 ? 6 : today - 1;
-
-        // Generate sparkline path
-        const sparkMin = Math.min(...p.spark);
-        const sparkMax = Math.max(...p.spark);
-        const sparkRange = sparkMax - sparkMin || 1;
-        const sparkPoints = p.spark.map((v, i) => {
-          const x = (i / (p.spark.length - 1)) * 60;
-          const y = 24 - ((v - sparkMin) / sparkRange) * 24;
-          return `${x},${y}`;
-        }).join(' ');
-
+        const pillClass = `pill-${p.status}`;
+        const nextBg = p.color + '18';
+        const nextColor = p.color;
+        const doneItems = p.done.map(d => `<li>${d}</li>`).join('');
+        const metric = p.metricLabel
+          ? `<div class="metric-row">
+               <span class="metric-label">${p.metricLabel}</span>
+               <span class="metric-value">${p.metricValue}</span>
+             </div>`
+          : '';
         return `
-          <div class="project-card" style="--color: ${p.color}; color: ${p.color};">
-            <div style="position: relative; margin-bottom: 32px;">
-              <div class="card-header">
-                <div class="card-title">${p.name}</div>
-                <div class="status-badge ${p.status}">${p.status.toUpperCase()}</div>
-                <div class="last-activity">${p.lastActivity}</div>
+          <div class="project-card">
+            <div class="card-glow" style="background: linear-gradient(90deg, ${p.color}, ${p.color}88);"></div>
+            <div class="card-top">
+              <div>
+                <div class="card-name">${p.name}</div>
+                <div class="card-tagline">${p.tagline}</div>
               </div>
-              <div class="milestone-pct">${p.milestone.pct}%</div>
-              <svg class="sparkline" viewBox="0 0 60 24" style="color: ${p.color};">
-                <polyline class="sparkline-line" points="${sparkPoints}"/>
-              </svg>
+              <div class="status-pill ${pillClass}">
+                <span class="status-dot"></span>
+                ${p.statusLabel}
+              </div>
+            </div>
+
+            <div class="card-progress">
+              <div class="progress-meta">
+                <span class="progress-label">Progress</span>
+                <span class="progress-pct">${p.progress}%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width:${p.progress}%; background: linear-gradient(90deg, ${p.color}cc, ${p.color});"></div>
+              </div>
             </div>
 
             <div class="card-divider"></div>
 
-            <div class="focus-line" style="border-left-color: ${p.color};">
-              ${p.focus}
+            <ul class="done-list">${doneItems}</ul>
+
+            <div class="next-action" style="background:${nextBg}; color:${nextColor};">
+              <span class="next-icon">→</span>
+              <span>${p.next}</span>
             </div>
 
-            <div class="stats-row">
-              <span class="stats-label">${p.milestone.label}</span>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${p.milestone.pct}%; background-color: ${p.color};"></div>
-              </div>
-            </div>
-
-            ${p.mrr.actual > 0 ? `
-              <div class="mrr-row">
-                <div class="mrr-value">$${p.mrr.actual.toLocaleString()}</div>
-                <div class="mrr-label">${p.mrr.label}</div>
-              </div>
-            ` : ''}
-
-            <div class="task-bar" style="color: ${p.color};">
-              ${tasks.map(done => `
-                <div class="task-segment ${done ? 'done' : ''}"></div>
-              `).join('')}
-            </div>
-
-            <div class="weekly-chart" style="color: ${p.color};">
-              ${p.weekly.map((val, i) => `
-                <div class="weekly-bar ${i === todayIndex ? 'today' : ''}" style="height: ${Math.max(4, val * 3)}px;" title="${['M','T','W','T','F','S','S'][i]}"></div>
-              `).join('')}
-            </div>
-
-            <div class="next-action">${p.nextAction}</div>
+            ${metric}
           </div>
         `;
       }).join('');
     }
 
-    // Update alert panel
-    function updateAlertPanel() {
-      const panel = document.getElementById('alertsPanel');
-      const activeAlerts = data.alerts.filter(a => !dismissedAlerts.has(a.id || a.timestamp));
+    // ── RENDER ACTIVITY ─────────────────────────────────
+    function renderActivity() {
+      document.getElementById('activityList').innerHTML = ACTIVITY.map(a => `
+        <div class="activity-item">
+          <div class="activity-dot" style="background:${a.color};box-shadow:0 0 6px ${a.color}80;"></div>
+          <div class="activity-body">
+            <div class="activity-text">${a.text}</div>
+            <div class="activity-time">${a.time}</div>
+          </div>
+        </div>
+      `).join('');
+    }
 
-      if (activeAlerts.length === 0) {
-        panel.innerHTML = '<div class="nominal">All systems nominal</div>';
-      } else {
-        panel.innerHTML = `
-          <div class="alert-list">
-            ${activeAlerts.map(alert => `
-              <div class="alert-item-panel">
-                <div class="alert-item-time">${alert.timestamp || '—'}</div>
-                <div class="alert-item-text">${alert.message || alert.text || ''}</div>
-                <div class="alert-item-dismiss" onclick="dismissAlert('${alert.id || alert.timestamp}')">✕</div>
-              </div>
-            `).join('')}
+    // ── RENDER SYSTEM STATUS ────────────────────────────
+    function renderStatus() {
+      document.getElementById('statusList').innerHTML = SYSTEM_STATUS.map(s => `
+        <div class="status-item">
+          <span class="status-name">${s.name}</span>
+          <span class="status-indicator ${s.status}">
+            <span class="indicator-dot"></span>
+            ${s.label}
+          </span>
+        </div>
+      `).join('');
+    }
+
+    // ── RENDER MRR ──────────────────────────────────────
+    function renderMRR() {
+      const max = 50000;
+      document.getElementById('mrrRows').innerHTML = PROJECTS.map(p => {
+        const pct = Math.max(1, (p.mrr / max) * 100);
+        const val = p.mrr > 0 ? '$' + p.mrr.toLocaleString() : '$0';
+        return `
+          <div class="mrr-item">
+            <span class="mrr-item-name">${p.name}</span>
+            <div class="mrr-item-bar">
+              <div class="mrr-item-fill" style="width:${pct}%;background:${p.color};"></div>
+            </div>
+            <span class="mrr-item-val">${val}</span>
           </div>
         `;
-      }
-
-      document.getElementById('alertsPanelTime').textContent = formatPanelTime(new Date());
+      }).join('');
     }
 
-    // Update activity panel
-    function updateActivityPanel() {
-      const panel = document.getElementById('activityPanel');
-
-      if (!data.activity || data.activity.length === 0) {
-        panel.innerHTML = '<div class="nominal">No recent activity</div>';
-      } else {
-        const tagColors = {
-          memory: '#5eadd4',
-          deploy: '#8b6bb1',
-          crm: '#5eadd4',
-          intel: '#c9964a',
-          system: '#888',
-          jarvis: '#8b6bb1'
-        };
-
-        panel.innerHTML = `
-          <div class="activity-list">
-            ${data.activity.slice(0, 10).map((item, idx) => {
-              const opacity = 1 - (idx * 0.04);
-              return `
-                <div class="activity-item" style="opacity: ${opacity};">
-                  <div class="activity-time">${item.time || '—'}</div>
-                  <div class="activity-tag ${item.type || ''}">${(item.type || 'log').toUpperCase()}</div>
-                  <div class="activity-text">${item.text || item.message || ''}</div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        `;
-      }
-
-      document.getElementById('activityPanelTime').textContent = formatPanelTime(new Date());
+    // ── LAST UPDATED ────────────────────────────────────
+    function setLastUpdated() {
+      const now = new Date();
+      const opts = { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+      document.getElementById('lastUpdated').textContent =
+        'Updated ' + now.toLocaleString('en-US', opts);
     }
 
-    // Update spending panel
-    function updateSpendingPanel() {
-      const panel = document.getElementById('spendingPanel');
-
-      if (!data.spending) {
-        panel.innerHTML = '<div class="nominal">No spending data</div>';
-      } else {
-        const monthly = data.spending.monthly_revenue || 0;
-        const nightly = Math.floor(monthly / 30);
-        const topNight = data.spending.top_night || 0;
-        const ops = data.spending.ops_cost || {};
-        const items = ops.items || [];
-        const opsCost = ops.total || 0;
-        const net = monthly - opsCost;
-
-        panel.innerHTML = `
-          <div class="spending-section">
-            <div class="spending-title">LIV REVENUE</div>
-            <div class="spending-total">$${monthly.toLocaleString()}</div>
-            <div class="spending-stat">
-              <span class="spending-stat-label">Nightly avg</span>
-              <span class="spending-stat-value">$${nightly.toLocaleString()}</span>
-            </div>
-            <div class="spending-stat">
-              <span class="spending-stat-label">Top night</span>
-              <span class="spending-stat-value">$${topNight.toLocaleString()}</span>
-            </div>
-          </div>
-
-          <div class="spending-section">
-            <div class="spending-title">COST OF OPERATIONS</div>
-            ${items.map(item => `
-              <div class="spending-item">
-                <span class="spending-item-name">${item.name}</span>
-                <span class="spending-item-amount">$${item.amount.toLocaleString()}</span>
-              </div>
-            `).join('')}
-            <div class="spending-item" style="font-weight: 700; border-top: 1px solid var(--border); margin-top: 8px; padding-top: 8px;">
-              <span class="spending-item-name">TOTAL</span>
-              <span class="spending-item-amount">$${opsCost.toLocaleString()}</span>
-            </div>
-            <div class="spending-net ${net > 0 ? 'positive' : 'negative'}">
-              <span>NET</span>
-              <span class="spending-net-amount">$${net.toLocaleString()}</span>
-            </div>
-          </div>
-        `;
-      }
-
-      document.getElementById('spendingPanelTime').textContent = formatPanelTime(new Date());
+    // ── THEME ───────────────────────────────────────────
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      document.querySelector('.theme-toggle').textContent = isDark ? '🌙' : '☀️';
+      localStorage.setItem('mc-theme', isDark ? 'light' : 'dark');
     }
 
-    // Update system panel
-    function updateSystemPanel() {
-      const panel = document.getElementById('systemPanel');
-
-      if (!data.system) {
-        panel.innerHTML = '<div class="nominal">No system data</div>';
-      } else {
-        const uptime = data.system.uptime || {};
-        const api = data.system.api || {};
-        const cron = data.system.cron || {};
-        const model = data.system.model || 'Nova';
-        const memory = data.system.memory_updated || '—';
-
-        const services = [
-          { name: 'LIV CRM', status: uptime.livcrm },
-          { name: 'LIV Intel', status: uptime.livintel },
-          { name: 'n8n', status: uptime.n8n },
-          { name: 'JARVIS Voice', status: uptime.jarvis },
-          { name: 'WhatsApp', status: uptime.whatsapp },
-          { name: 'OpenClaw', status: uptime.openclaw }
-        ];
-
-        const apiUsage = api.usage_pct || 0;
-        const sonnetCost = api.sonnet_cost || 0;
-        const haikuCost = api.haiku_cost || 0;
-        const totalCost = sonnetCost + haikuCost;
-
-        panel.innerHTML = `
-          <div class="system-section">
-            ${services.map(s => `
-              <div class="uptime-row">
-                <div class="uptime-service">${s.name}</div>
-                <div class="status-dot ${s.status === true ? 'up' : 'down'}"></div>
-              </div>
-            `).join('')}
-          </div>
-
-          <div class="system-section">
-            <div class="api-usage-label">API Usage: ${apiUsage}%</div>
-            <div class="api-usage-bar">
-              <div class="api-usage-fill ${apiUsage > 80 ? 'high' : ''}" style="width: ${apiUsage}%;"></div>
-            </div>
-            <div class="api-cost-items">
-              <div>Sonnet $${sonnetCost.toFixed(2)} · Haiku $${haikuCost.toFixed(2)} · Total $${totalCost.toFixed(2)}</div>
-            </div>
-          </div>
-
-          <div class="system-section">
-            <div class="cron-info">${cron.active || 0} jobs active · Next: ${cron.next || '—'}</div>
-            <div class="model-pill">${model}</div>
-            <div class="memory-info">Memory updated: ${memory}</div>
-          </div>
-        `;
+    function initTheme() {
+      const saved = localStorage.getItem('mc-theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+        document.querySelector('.theme-toggle').textContent = saved === 'dark' ? '☀️' : '🌙';
       }
-
-      document.getElementById('systemPanelTime').textContent = formatPanelTime(new Date());
     }
 
-    // Update footer
-    function updateFooter() {
-      document.getElementById('lastSync').textContent = formatPanelTime(new Date());
-    }
-
-    // Keyboard shortcuts
-    document.addEventListener('keydown', e => {
-      if (e.key === 'r' || e.key === 'R') {
-        fetchData();
-      } else if (e.key >= '1' && e.key <= '5') {
-        const idx = parseInt(e.key) - 1;
-        const cards = document.querySelectorAll('.project-card');
-        if (cards[idx]) {
-          cards[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      } else if (e.key === 'a' || e.key === 'A') {
-        document.querySelector('.panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-
-    // Initial load and poll
-    fetchData();
-    setInterval(fetchData, 60000);
+    // ── INIT ────────────────────────────────────────────
+    initTheme();
+    renderProjects();
+    renderActivity();
+    renderStatus();
+    renderMRR();
+    setLastUpdated();
   </script>
 </body>
 </html>
