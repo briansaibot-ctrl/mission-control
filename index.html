@@ -1,1268 +1,1279 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mission Control</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: #080808;
-            background: radial-gradient(ellipse at top, #1a1a2e 0%, #080808 40%);
-            color: #e4e4e7;
-            font-family: 'Space Mono', monospace;
-            font-size: 13px;
-            line-height: 1.5;
-            overflow-x: hidden;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(0, 0, 0, 0.3);
-            border-bottom: 1px solid #1a1a1a;
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-            animation: slideDown 0.6s ease-out;
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .header-dots {
-            display: flex;
-            gap: 0.3rem;
-            margin-right: 0.5rem;
-        }
-
-        .header-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .header-dot.cyan {
-            background: #00e5ff;
-            box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
-        }
-
-        .header-dot.amber {
-            background: #f59e0b;
-            box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
-        }
-
-        .header-content h1 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 0.15em;
-            margin-bottom: 0.25rem;
-        }
-
-        .header-content p {
-            font-size: 0.85rem;
-            color: #888;
-        }
-
-        .header-right {
-            display: flex;
-            gap: 1.5rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .weather-widget {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid #1a1a1a;
-            border-radius: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .weather-widget-location {
-            color: #888;
-            margin-bottom: 0.25rem;
-        }
-
-        .weather-widget-temps {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .weather-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .weather-label {
-            color: #666;
-            font-size: 0.75rem;
-        }
-
-        .weather-temp {
-            font-weight: 700;
-            font-size: 0.95rem;
-        }
-
-        .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            padding: 0.4rem 0.8rem;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid #1a1a1a;
-            border-radius: 1rem;
-            font-size: 0.8rem;
-        }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .status-dot.active {
-            background: #10b981;
-            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
-        }
-
-        /* Main Container */
-        .container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 2rem;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* Projects Grid */
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        @media (max-width: 1200px) {
-            .projects-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .projects-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .project-card {
-            background: #0c0c0c;
-            border: 1px solid #1a1a1a;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            animation: slideUp 0.6s ease-out forwards;
-            opacity: 0;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .project-card:nth-child(1) { animation-delay: 0.1s; }
-        .project-card:nth-child(2) { animation-delay: 0.2s; }
-        .project-card:nth-child(3) { animation-delay: 0.3s; }
-        .project-card:nth-child(4) { animation-delay: 0.4s; }
-        .project-card:nth-child(5) { animation-delay: 0.5s; }
-
-        .project-card:hover {
-            border-color: #333;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        }
-
-        .card-accent {
-            height: 4px;
-            background: linear-gradient(90deg, currentColor, transparent);
-        }
-
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-            position: relative;
-            min-height: 50px;
-        }
-
-        .card-title-section {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            flex: 1;
-        }
-
-        .progress-ring-container {
-            position: relative;
-            width: 50px;
-            height: 50px;
-            flex-shrink: 0;
-        }
-
-        .progress-ring {
-            width: 50px;
-            height: 50px;
-            transform: rotate(-90deg);
-        }
-
-        .progress-ring-circle {
-            fill: none;
-            stroke: #1a1a1a;
-            stroke-width: 3;
-            transition: stroke-dashoffset 0.6s ease;
-        }
-
-        .progress-ring-circle.active {
-            stroke: currentColor;
-            filter: drop-shadow(0 0 4px currentColor);
-        }
-
-        .progress-ring-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: currentColor;
-        }
-
-        .title-content {
-            flex: 1;
-        }
-
-        .title-row {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .project-name {
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            padding: 0.2rem 0.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0.25rem;
-            font-size: 0.7rem;
-        }
-
-        .status-badge-dot {
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .last-activity {
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        .sparkline-container {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 120px;
-            height: 50px;
-        }
-
-        .focus-text {
-            padding: 0.75rem;
-            padding-left: 1rem;
-            background: rgba(255, 255, 255, 0.02);
-            border-left: 3px solid currentColor;
-            margin-bottom: 1rem;
-            font-size: 0.85rem;
-            color: #bbb;
-            line-height: 1.4;
-        }
-
-        .metric-row {
-            margin-bottom: 1rem;
-        }
-
-        .metric-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.4rem;
-            font-size: 0.8rem;
-            color: #888;
-        }
-
-        .metric-value {
-            font-weight: 700;
-            color: #e4e4e7;
-        }
-
-        .progress-bar {
-            height: 8px;
-            background: #1a1a1a;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            border-radius: 4px;
-            transition: width 0.6s ease;
-            animation: fillBar 0.8s ease-out;
-        }
-
-        @keyframes fillBar {
-            from {
-                width: 0;
-            }
-        }
-
-        .gradient-fill {
-            background: linear-gradient(90deg, currentColor, rgba(255, 255, 255, 0.2));
-        }
-
-        .tasks-bar {
-            display: flex;
-            gap: 2px;
-            height: 6px;
-            margin-bottom: 1rem;
-        }
-
-        .task-segment {
-            flex: 1;
-            background: #1a1a1a;
-            border-radius: 2px;
-            transition: background 0.3s ease;
-        }
-
-        .task-segment.done {
-            background: currentColor;
-            filter: drop-shadow(0 0 3px currentColor);
-        }
-
-        .weekly-chart {
-            display: flex;
-            gap: 4px;
-            height: 30px;
-            align-items: flex-end;
-            margin-bottom: 1rem;
-        }
-
-        .weekly-day {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 0.3rem;
-            font-size: 0.7rem;
-            color: #666;
-        }
-
-        .weekly-bar {
-            width: 100%;
-            background: #1a1a1a;
-            border-radius: 2px;
-            transition: all 0.3s ease;
-            min-height: 2px;
-        }
-
-        .weekly-bar.filled {
-            background: currentColor;
-            filter: drop-shadow(0 0 3px currentColor);
-        }
-
-        .weekly-bar.today {
-            background: rgba(255, 255, 255, 0.3);
-            border: 1px solid #666;
-        }
-
-        .weekly-label {
-            font-size: 0.65rem;
-            font-weight: 700;
-        }
-
-        .next-action {
-            padding-top: 0.75rem;
-            border-top: 1px solid #1a1a1a;
-            font-size: 0.8rem;
-            color: #999;
-            line-height: 1.4;
-        }
-
-        /* Bottom Panels */
-        .bottom-panels {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-top: 2rem;
-            animation: slideUp 0.6s ease-out 0.6s backwards;
-        }
-
-        @media (max-width: 1024px) {
-            .bottom-panels {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .panel {
-            background: #0c0c0c;
-            border: 1px solid #1a1a1a;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .panel:hover {
-            border-color: #333;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-        }
-
-        .panel-title {
-            font-weight: 700;
-            font-size: 0.9rem;
-            letter-spacing: 0.1em;
-            margin-bottom: 1rem;
-            color: #bbb;
-        }
-
-        /* Activity Log */
-        .activity-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .activity-list::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .activity-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .activity-list::-webkit-scrollbar-thumb {
-            background: #333;
-            border-radius: 3px;
-        }
-
-        .activity-item {
-            display: flex;
-            gap: 0.75rem;
-            padding: 0.5rem;
-            border-left: 3px solid;
-            padding-left: 0.75rem;
-            font-size: 0.8rem;
-            transition: opacity 0.3s ease;
-        }
-
-        .activity-item:nth-child(1) { opacity: 1.0; }
-        .activity-item:nth-child(2) { opacity: 0.95; }
-        .activity-item:nth-child(3) { opacity: 0.85; }
-        .activity-item:nth-child(4) { opacity: 0.75; }
-        .activity-item:nth-child(5) { opacity: 0.65; }
-        .activity-item:nth-child(n+6) { opacity: 0.5; }
-
-        .activity-time {
-            color: #666;
-            flex-shrink: 0;
-            min-width: 60px;
-        }
-
-        .activity-content {
-            flex: 1;
-        }
-
-        .activity-label {
-            font-weight: 700;
-            color: #e4e4e7;
-            display: inline;
-        }
-
-        .activity-text {
-            color: #999;
-            display: inline;
-        }
-
-        .activity-item.system {
-            border-left-color: #00e5ff;
-        }
-
-        .activity-item.jarvis {
-            border-left-color: #a855f7;
-        }
-
-        .activity-item.crm {
-            border-left-color: #00e5ff;
-        }
-
-        .activity-item.intel {
-            border-left-color: #f59e0b;
-        }
-
-        /* Portfolio Overview */
-        .mrr-display {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 0.5rem;
-        }
-
-        .mrr-amount {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .mrr-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #00e5ff;
-        }
-
-        .mrr-goal {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 0.25rem;
-        }
-
-        .mrr-bar-container {
-            flex: 1;
-            margin: 0 1rem;
-        }
-
-        .mrr-bar {
-            height: 6px;
-            background: #1a1a1a;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-bottom: 0.5rem;
-        }
-
-        .mrr-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00e5ff, #0099cc);
-            width: 6.16%;
-            border-radius: 3px;
-        }
-
-        .mrr-pct {
-            font-size: 0.75rem;
-            color: #666;
-            text-align: right;
-        }
-
-        .portfolio-stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-        }
-
-        .stat-item {
-            padding: 0.75rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-left: 2px solid #1a1a1a;
-            border-radius: 0.25rem;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            color: #666;
-            margin-bottom: 0.25rem;
-        }
-
-        .stat-value {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #e4e4e7;
-        }
-
-        .breakdown-title {
-            font-size: 0.75rem;
-            color: #666;
-            margin-top: 1rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .breakdown-bar {
-            height: 20px;
-            background: #1a1a1a;
-            border-radius: 3px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .breakdown-segment {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.65rem;
-            font-weight: 700;
-            color: #000;
-        }
-
-        /* System Status */
-        .system-rows {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .system-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 0.25rem;
-            font-size: 0.85rem;
-        }
-
-        .system-label {
-            color: #888;
-        }
-
-        .system-value {
-            font-weight: 700;
-            color: #e4e4e7;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .system-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .system-indicator.connected {
-            background: #10b981;
-            box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
-        }
-
-        .system-indicator.disconnected {
-            background: #6b7280;
-        }
-
-        .system-indicator.warning {
-            background: #ef4444;
-            box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
-        }
-
-        .api-usage-bar {
-            height: 8px;
-            background: #1a1a1a;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 0.5rem;
-        }
-
-        .api-usage-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #10b981, #10b981);
-            width: 42%;
-            border-radius: 4px;
-        }
-
-        .api-usage-fill.warning {
-            background: linear-gradient(90deg, #f59e0b, #f59e0b);
-        }
-
-        .api-usage-fill.critical {
-            background: linear-gradient(90deg, #ef4444, #ef4444);
-        }
-
-        .shift-indicator {
-            display: inline-block;
-            padding: 0.3rem 0.6rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .shift-indicator.pre {
-            color: #f59e0b;
-        }
-
-        .shift-indicator.at {
-            color: #a855f7;
-        }
-
-        .shift-indicator.off {
-            color: #6b7280;
-        }
-
-        .pills-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.75rem;
-        }
-
-        .pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            padding: 0.3rem 0.6rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 0.25rem;
-            font-size: 0.7rem;
-        }
-
-        .pill.model {
-            background: rgba(168, 85, 247, 0.1);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mission Control</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #080808;
+      --card: #0f0f0f;
+      --border: #1e1e1e;
+      --border-hover: #2a2a2a;
+      --text: #e8e8e8;
+      --muted: #666;
+      --dimmed: #444;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 1.4;
+      min-height: 100vh;
+    }
+
+    body {
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+    }
+
+    .header-left h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .header-left p {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .header-right {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .pill {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text);
+      padding: 4px 8px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+
+    .alert-badge {
+      background: #8b3333;
+      color: #fff;
+      min-width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 700;
+    }
+
+    /* Alert Banner */
+    #alertBanner {
+      display: none;
+      background: #2a1515;
+      border-bottom: 1px solid #8b3333;
+      padding: 12px 16px;
+      gap: 12px;
+      flex-direction: column;
+    }
+
+    #alertBanner.visible {
+      display: flex;
+    }
+
+    .alert-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 8px;
+      border-left: 2px solid #8b3333;
+      padding-left: 10px;
+    }
+
+    .alert-time {
+      font-size: 10px;
+      color: var(--muted);
+      flex-shrink: 0;
+      min-width: 40px;
+    }
+
+    .alert-message {
+      flex: 1;
+      font-size: 11px;
+      color: var(--text);
+    }
+
+    .alert-dismiss {
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 16px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .alert-dismiss:hover {
+      color: var(--text);
+    }
+
+    /* Main Content */
+    main {
+      flex: 1;
+      padding: 16px;
+    }
+
+    /* Project Grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 900px) {
+      .projects-grid {
+        grid-template-columns: repeat(3, 1fr);
+        margin-bottom: 32px;
+      }
+
+      .projects-grid .project-card:nth-child(4),
+      .projects-grid .project-card:nth-child(5) {
+        grid-column: auto;
+      }
+
+      .projects-grid {
+        align-items: start;
+      }
+
+      .projects-grid > :nth-child(4) {
+        grid-column: 2 / 3;
+        grid-row: 2;
+      }
+
+      .projects-grid > :nth-child(5) {
+        grid-column: 3 / 4;
+        grid-row: 2;
+      }
+    }
+
+    /* Project Card */
+    .project-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: 2px solid;
+      border-radius: 4px;
+      padding: 16px;
+      position: relative;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      animation: slideIn 0.5s ease forwards;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .project-card:nth-child(1) { animation-delay: 0s; border-top-color: rgba(94, 173, 212, 0.7); }
+    .project-card:nth-child(2) { animation-delay: 0.1s; border-top-color: rgba(201, 150, 74, 0.7); }
+    .project-card:nth-child(3) { animation-delay: 0.2s; border-top-color: rgba(139, 107, 177, 0.7); }
+    .project-card:nth-child(4) { animation-delay: 0.3s; border-top-color: rgba(74, 158, 122, 0.7); }
+    .project-card:nth-child(5) { animation-delay: 0.4s; border-top-color: rgba(107, 107, 177, 0.7); }
+
+    .project-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .status-badge {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 0;
+      background: none;
+      border: none;
+    }
+
+    .status-badge.active { color: #7a9f6f; }
+    .status-badge.launching { color: #b89f5f; }
+    .status-badge.blocked { color: #8b5555; }
+    .status-badge.on-hold { color: var(--muted); }
+
+    .milestone-pct {
+      position: absolute;
+      top: 0;
+      right: 0;
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .card-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 0;
+    }
+
+    .focus-line {
+      border-left: 2px solid;
+      padding-left: 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .stats-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 10px;
+    }
+
+    .stats-label {
+      color: var(--muted);
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 1px;
+      background: var(--dimmed);
+      margin: 0 12px;
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--muted);
+    }
+
+    .mrr-row {
+      margin-bottom: 12px;
+    }
+
+    .mrr-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .mrr-label {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .task-bar {
+      display: flex;
+      gap: 2px;
+      margin-bottom: 12px;
+      height: 8px;
+    }
+
+    .task-segment {
+      flex: 1;
+      background: var(--dimmed);
+      border-radius: 1px;
+    }
+
+    .task-segment.done {
+      background: currentColor;
+      opacity: 0.6;
+    }
+
+    .weekly-chart {
+      display: flex;
+      gap: 3px;
+      margin-bottom: 12px;
+      align-items: flex-end;
+      height: 20px;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .weekly-bar {
+      flex: 1;
+      background: var(--dimmed);
+      border-radius: 1px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .weekly-bar.today {
+      background: currentColor;
+      opacity: 0.5;
+    }
+
+    .sparkline {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 60px;
+      height: 24px;
+    }
+
+    .sparkline-line {
+      stroke: currentColor;
+      stroke-width: 1.5;
+      fill: none;
+      opacity: 0.4;
+    }
+
+    .next-action {
+      font-size: 11px;
+      color: var(--muted);
+      font-style: italic;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .last-activity {
+      font-size: 10px;
+      color: var(--muted);
+      position: absolute;
+      top: 48px;
+      right: 16px;
+    }
+
+    /* Bottom Panels */
+    .panels-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 900px) {
+      .panels-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 16px;
+      position: relative;
+      animation: slideIn 0.5s ease forwards;
+      opacity: 0;
+      transform: translateY(12px);
+    }
+
+    .panel:nth-of-type(1) { animation-delay: 0.5s; }
+    .panel:nth-of-type(2) { animation-delay: 0.6s; }
+    .panel:nth-of-type(3) { animation-delay: 0.7s; }
+    .panel:nth-of-type(4) { animation-delay: 0.8s; }
+
+    .panel-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 12px;
+      letter-spacing: 0.05em;
+    }
+
+    .panel-updated {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    /* Alerts Panel */
+    .nominal {
+      font-size: 11px;
+      color: #7a9f6f;
+    }
+
+    .alert-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .alert-item-panel {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 8px;
+      border-left: 2px solid #8b3333;
+      padding-left: 10px;
+      background: rgba(139, 51, 51, 0.1);
+      border-radius: 2px;
+    }
+
+    .alert-item-time {
+      font-size: 10px;
+      color: var(--muted);
+      flex-shrink: 0;
+      min-width: 50px;
+    }
+
+    .alert-item-text {
+      flex: 1;
+      font-size: 11px;
+      color: var(--text);
+    }
+
+    .alert-item-dismiss {
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 14px;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .alert-item-dismiss:hover {
+      color: var(--text);
+    }
+
+    /* Activity Panel */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 24px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 8px;
+      font-size: 11px;
+      align-items: center;
+      transition: opacity 0.3s;
+    }
+
+    .activity-time {
+      color: var(--muted);
+      flex-shrink: 0;
+      min-width: 40px;
+    }
+
+    .activity-tag {
+      padding: 2px 6px;
+      border-radius: 2px;
+      font-size: 9px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .activity-tag.memory { background: rgba(94, 173, 212, 0.2); color: #5eadd4; }
+    .activity-tag.deploy { background: rgba(139, 107, 177, 0.2); color: #8b6bb1; }
+    .activity-tag.crm { background: rgba(94, 173, 212, 0.2); color: #5eadd4; }
+    .activity-tag.intel { background: rgba(201, 150, 74, 0.2); color: #c9964a; }
+    .activity-tag.system { background: rgba(136, 136, 136, 0.2); color: #888; }
+    .activity-tag.jarvis { background: rgba(139, 107, 177, 0.2); color: #8b6bb1; }
+
+    .activity-text {
+      flex: 1;
+      color: var(--text);
+    }
+
+    /* Spending Panel */
+    .spending-section {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .spending-section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .spending-title {
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .spending-total {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .spending-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .spending-stat-label {
+      flex: 1;
+    }
+
+    .spending-stat-value {
+      text-align: right;
+    }
+
+    .spending-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .spending-item:last-child {
+      border-bottom: none;
+    }
+
+    .spending-item-name {
+      flex: 1;
+    }
+
+    .spending-item-amount {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .spending-net {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 8px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+
+    .spending-net.positive .spending-net-amount {
+      color: #7a9f6f;
+    }
+
+    .spending-net.negative .spending-net-amount {
+      color: #8b5555;
+    }
+
+    /* System Panel */
+    .system-section {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .system-section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .uptime-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      padding: 6px 0;
+    }
+
+    .uptime-service {
+      flex: 1;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status-dot.up {
+      background: #7a9f6f;
+    }
+
+    .status-dot.down {
+      background: #8b5555;
+    }
+
+    .api-usage-label {
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .api-usage-bar {
+      width: 100%;
+      height: 2px;
+      background: var(--dimmed);
+      border-radius: 1px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .api-usage-fill {
+      height: 100%;
+      background: var(--muted);
+    }
+
+    .api-usage-fill.high {
+      background: #8b3333;
+    }
+
+    .api-cost-items {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .cron-info {
+      font-size: 11px;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .model-pill {
+      display: inline-block;
+      background: var(--border);
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 9px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .memory-info {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 12px 16px;
+      font-size: 9px;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .footer-left {
+      flex: 1;
+      text-align: left;
+    }
+
+    .footer-right {
+      flex: 1;
+      text-align: right;
+    }
+
+    .keyboard-hint {
+      font-size: 8px;
+      color: var(--dimmed);
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--border-hover);
+    }
+  </style>
 </head>
 <body>
-    <header class="header">
-        <div class="header-left">
-            <div class="header-dots">
-                <div class="header-dot cyan"></div>
-                <div class="header-dot amber"></div>
-            </div>
-            <div class="header-content">
-                <h1>MISSION CONTROL</h1>
-                <p>Nova · Brian Altmann · Las Vegas</p>
-            </div>
-        </div>
-        <div class="header-right">
-            <div class="weather-widget">
-                <div class="weather-widget-location">Las Vegas</div>
-                <div class="weather-widget-temps">
-                    <div class="weather-item">
-                        <div class="weather-label">Day</div>
-                        <div class="weather-temp" id="weatherDay">85°F</div>
-                    </div>
-                    <div class="weather-item">
-                        <div class="weather-label">Night</div>
-                        <div class="weather-temp" id="weatherNight">72°F</div>
-                    </div>
-                </div>
-            </div>
-            <div class="status-pill">
-                <span class="status-dot active" id="shiftDot"></span>
-                <span id="shiftStatus">Pre-Shift</span>
-            </div>
-            <div class="status-pill">
-                <span class="status-dot active"></span>
-                <span>Nova Active</span>
-            </div>
-        </div>
-    </header>
-
-    <div class="container">
-        <div class="projects-grid" id="projectsGrid"></div>
-        
-        <div class="bottom-panels">
-            <!-- Activity Log -->
-            <div class="panel">
-                <div class="panel-title">ACTIVITY LOG</div>
-                <div class="activity-list" id="activityLog"></div>
-            </div>
-
-            <!-- Portfolio Overview -->
-            <div class="panel">
-                <div class="panel-title">PORTFOLIO MRR</div>
-                <div class="mrr-display">
-                    <div class="mrr-amount">
-                        <div class="mrr-value" id="portfolioMRR">$3,082</div>
-                        <div class="mrr-goal">/ $50,000</div>
-                    </div>
-                    <div class="mrr-bar-container">
-                        <div class="mrr-bar">
-                            <div class="mrr-fill" id="portfolioBar"></div>
-                        </div>
-                        <div class="mrr-pct">6.16%</div>
-                    </div>
-                </div>
-                <div class="portfolio-stats" id="portfolioStats"></div>
-                <div class="breakdown-title">MRR BREAKDOWN</div>
-                <div class="breakdown-bar">
-                    <div class="breakdown-segment" style="width: 100%; background: #00e5ff;">LIV CRM $3,082</div>
-                </div>
-            </div>
-
-            <!-- System Status -->
-            <div class="panel">
-                <div class="panel-title">SYSTEM STATUS</div>
-                <div class="system-rows">
-                    <div class="system-row">
-                        <div class="system-label">Daily API Usage</div>
-                        <div class="system-value">
-                            <span id="apiUsageText">42 / 100</span>
-                        </div>
-                    </div>
-                    <div class="api-usage-bar">
-                        <div class="api-usage-fill" id="apiUsageFill"></div>
-                    </div>
-                    
-                    <div class="system-row">
-                        <div class="system-label">API Costs Today</div>
-                        <div class="system-value" id="apiCosts">Sonnet $0.31 | Haiku $0.09 | Total $0.40</div>
-                    </div>
-
-                    <div class="system-row">
-                        <div class="system-label">Shift Status</div>
-                        <div class="system-value">
-                            <span class="shift-indicator" id="shiftStatusFull">Pre-Shift</span>
-                        </div>
-                    </div>
-
-                    <div class="system-row">
-                        <div class="system-label">WhatsApp</div>
-                        <div class="system-value">
-                            <span class="system-indicator connected"></span>
-                            <span>Connected</span>
-                        </div>
-                    </div>
-
-                    <div class="system-row">
-                        <div class="system-label">Gmail</div>
-                        <div class="system-value">
-                            <span class="system-indicator connected"></span>
-                            <span>Connected</span>
-                        </div>
-                    </div>
-
-                    <div class="system-row">
-                        <div class="system-label">JARVIS Voice</div>
-                        <div class="system-value">
-                            <span class="system-indicator disconnected"></span>
-                            <span>Waiting for mic</span>
-                        </div>
-                    </div>
-
-                    <div class="system-row">
-                        <div class="system-label">Cron Jobs</div>
-                        <div class="system-value" id="cronInfo">15 running · Next: 8:00 PM</div>
-                    </div>
-
-                    <div class="system-row">
-                        <div class="system-label">Memory Updated</div>
-                        <div class="system-value" id="memoryUpdate">Apr 13, 6:03 PM</div>
-                    </div>
-
-                    <div class="pills-row">
-                        <div class="pill model">claude-sonnet-4-6</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <!-- Header -->
+  <header>
+    <div class="header-left">
+      <h1>MISSION CONTROL</h1>
+      <p>Nova · Brian Altmann · Las Vegas</p>
     </div>
+    <div class="header-right">
+      <div id="weatherPill" class="pill">
+        <span id="weatherIcon">—</span>
+        <span id="weatherTemp">—</span>
+      </div>
+      <div id="shiftPill" class="pill" style="display: none;">
+        <span id="shiftStatus">—</span>
+      </div>
+      <div id="alertBadge" class="alert-badge" style="display: none;"></div>
+    </div>
+  </header>
 
-    <script>
-        const PROJECTS = [
-            {
-                id: "liv-crm",
-                name: "LIV CRM",
-                initial: "L",
-                color: "#00e5ff",
-                status: "active",
-                mrr: { actual: 3082, target: 50000, label: "MRR" },
-                milestone: { label: "LIFETIME SPEND FIX", pct: 100 },
-                tasks: { done: 8, total: 10 },
-                lastActivity: "2h",
-                focus: "670 guest profiles, $3.08M revenue tracked",
-                nextAction: "Upload 2024 & 2026 data for YOY comparison",
-                spark: [20,45,30,60,40,80,65,90],
-                weekly: [3,5,2,8,6,1,4]
-            },
-            {
-                id: "liv-intel",
-                name: "LIV INTEL",
-                initial: "I",
-                color: "#f59e0b",
-                status: "active",
-                mrr: { actual: 0, target: 50000, label: "MRR" },
-                milestone: { label: "PWA v18 LIVE", pct: 100 },
-                tasks: { done: 12, total: 14 },
-                lastActivity: "4h",
-                focus: "Social competitor monitor — 10 venues, 3x daily",
-                nextAction: "Wire live analytics data to PWA charts",
-                spark: [10,30,20,50,35,70,55,85],
-                weekly: [2,4,1,6,5,0,3]
-            },
-            {
-                id: "jarvis",
-                name: "JARVIS VOICE",
-                initial: "J",
-                color: "#a855f7",
-                status: "launching",
-                mrr: { actual: 0, target: 50000, label: "MRR" },
-                milestone: { label: "MIC REQUIRED", pct: 85 },
-                tasks: { done: 7, total: 8 },
-                lastActivity: "30m",
-                focus: "Hey Jarvis wake word + ElevenLabs George voice",
-                nextAction: "Plug in USB mic → run setup.sh → go live",
-                spark: [0,0,10,20,40,60,75,85],
-                weekly: [0,0,0,0,5,8,9]
-            },
-            {
-                id: "epn",
-                name: "EPN",
-                initial: "E",
-                color: "#10b981",
-                status: "launching",
-                mrr: { actual: 0, target: 50000, label: "MRR" },
-                milestone: { label: "FOUNDATION", pct: 10 },
-                tasks: { done: 1, total: 10 },
-                lastActivity: "—",
-                focus: "B2B lead intelligence platform",
-                nextAction: "Define MVP scope and data sources",
-                spark: [0,0,0,0,0,0,5,10],
-                weekly: [0,0,0,0,0,0,1]
-            },
-            {
-                id: "leaseowl",
-                name: "LEASEOWL",
-                initial: "O",
-                color: "#6366f1",
-                status: "launching",
-                mrr: { actual: 0, target: 50000, label: "MRR" },
-                milestone: { label: "FOUNDATION", pct: 5 },
-                tasks: { done: 0, total: 10 },
-                lastActivity: "—",
-                focus: "Real estate lease intelligence",
-                nextAction: "Define MVP scope and target market",
-                spark: [0,0,0,0,0,0,0,5],
-                weekly: [0,0,0,0,0,0,0]
-            }
-        ];
+  <!-- Alert Banner -->
+  <div id="alertBanner"></div>
 
-        const ACTIVITY_LOG = [
-            { time: "6:02 PM", type: "system", label: "NOVA", text: "Gmail OAuth connected — email reports live" },
-            { time: "5:53 PM", type: "jarvis", label: "JARVIS", text: "ElevenLabs George voice tested — flash model active" },
-            { time: "4:44 PM", type: "crm", label: "LIV CRM", text: "Lifetime spend fix complete — 670 guests, $3.08M verified" },
-            { time: "4:20 PM", type: "system", label: "NOVA", text: "Gmail hook dedup fixed — billing emails silenced" },
-            { time: "3:00 PM", type: "intel", label: "LIV INTEL", text: "PWA v18 deployed — Best Times bars fixed, Download Report added" },
-            { time: "11:00 AM", type: "intel", label: "LIV INTEL", text: "Monday trend digest sent to WhatsApp" },
-        ];
+  <!-- Main Content -->
+  <main>
+    <!-- Project Cards -->
+    <div class="projects-grid" id="projectsGrid"></div>
 
-        const SYSTEM = {
-            apiUsage: { used: 42, limit: 100 },
-            apiCost: { sonnet: 0.31, haiku: 0.09, total: 0.40 },
-            whatsapp: true,
-            gmail: true,
-            jarvisVoice: false,
-            cronJobs: 15,
-            nextCron: "8:00 PM",
-            novaModel: "claude-sonnet-4-6",
-            memoryUpdated: "Apr 13, 6:03 PM"
+    <!-- Bottom Panels -->
+    <div class="panels-grid">
+      <div class="panel">
+        <div class="panel-title">ALERTS</div>
+        <div id="alertsPanel"></div>
+        <div class="panel-updated">
+          <span id="alertsPanelTime">—</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">NOVA ACTIVITY</div>
+        <div id="activityPanel"></div>
+        <div class="panel-updated">
+          <span id="activityPanelTime">—</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">SPENDING</div>
+        <div id="spendingPanel"></div>
+        <div class="panel-updated">
+          <span id="spendingPanelTime">—</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">SYSTEM</div>
+        <div id="systemPanel"></div>
+        <div class="panel-updated">
+          <span id="systemPanelTime">—</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-left">MISSION CONTROL · Nova</div>
+    <div>Last sync: <span id="lastSync">—</span></div>
+    <div class="footer-right keyboard-hint">R refresh · 1-5 project · A alerts</div>
+  </footer>
+
+  <script>
+    // Project data
+    const PROJECTS = [
+      {
+        id: "liv-crm", name: "LIV CRM", initial: "L", color: "#5eadd4",
+        status: "active",
+        mrr: { actual: 3082, label: "Monthly Revenue" },
+        milestone: { label: "LIFETIME SPEND FIX", pct: 100 },
+        tasks: { done: 8, total: 10 },
+        lastActivity: "2h",
+        focus: "670 guest profiles · $3.08M revenue tracked",
+        nextAction: "Upload 2024 & 2026 data for YOY comparison",
+        spark: [20,45,30,60,40,80,65,90],
+        weekly: [3,5,2,8,6,1,4]
+      },
+      {
+        id: "liv-intel", name: "LIV INTEL", initial: "I", color: "#c9964a",
+        status: "active",
+        mrr: { actual: 0, label: "Revenue" },
+        milestone: { label: "PWA v18 LIVE", pct: 100 },
+        tasks: { done: 12, total: 14 },
+        lastActivity: "4h",
+        focus: "Social competitor monitor · 10 venues · 3x daily",
+        nextAction: "Wire live analytics data to PWA charts",
+        spark: [10,30,20,50,35,70,55,85],
+        weekly: [2,4,1,6,5,0,3]
+      },
+      {
+        id: "jarvis", name: "JARVIS VOICE", initial: "J", color: "#8b6bb1",
+        status: "launching",
+        mrr: { actual: 0, label: "Revenue" },
+        milestone: { label: "AWAITING MIC", pct: 85 },
+        tasks: { done: 7, total: 8 },
+        lastActivity: "30m",
+        focus: "Hey Jarvis · ElevenLabs George · Haiku + Flash",
+        nextAction: "Plug in USB mic → run setup.sh → go live",
+        spark: [0,0,10,20,40,60,75,85],
+        weekly: [0,0,0,0,5,8,9]
+      },
+      {
+        id: "epn", name: "EPN", initial: "E", color: "#4a9e7a",
+        status: "launching",
+        mrr: { actual: 0, label: "Revenue" },
+        milestone: { label: "FOUNDATION", pct: 10 },
+        tasks: { done: 1, total: 10 },
+        lastActivity: "—",
+        focus: "B2B lead intelligence platform",
+        nextAction: "Define MVP scope and data sources",
+        spark: [0,0,0,0,0,0,5,10],
+        weekly: [0,0,0,0,0,0,1]
+      },
+      {
+        id: "leaseowl", name: "LEASEOWL", initial: "O", color: "#6b6bb1",
+        status: "launching",
+        mrr: { actual: 0, label: "Revenue" },
+        milestone: { label: "FOUNDATION", pct: 5 },
+        tasks: { done: 0, total: 10 },
+        lastActivity: "—",
+        focus: "Real estate lease intelligence",
+        nextAction: "Define MVP scope and target market",
+        spark: [0,0,0,0,0,0,0,5],
+        weekly: [0,0,0,0,0,0,0]
+      }
+    ];
+
+    // State
+    let data = {
+      alerts: [],
+      spending: null,
+      system: null,
+      activity: [],
+      weather: null
+    };
+
+    let dismissedAlerts = new Set(JSON.parse(localStorage.getItem('dismissedAlerts') || '[]'));
+
+    // Format time
+    function formatTime(date) {
+      const h = String(date.getHours()).padStart(2, '0');
+      const m = String(date.getMinutes()).padStart(2, '0');
+      return `${h}:${m}`;
+    }
+
+    // Format date for panel timestamps
+    function formatPanelTime(date) {
+      const h = String(date.getHours()).padStart(2, '0');
+      const m = String(date.getMinutes()).padStart(2, '0');
+      const s = String(date.getSeconds()).padStart(2, '0');
+      return `${h}:${m}:${s}`;
+    }
+
+    // Get shift status based on time
+    function getShiftStatus() {
+      const now = new Date();
+      const hour = now.getHours();
+      if (hour >= 12 && hour < 20) return "PRE-SHIFT";
+      if (hour >= 20 && hour < 4) return "AT WORK";
+      return "OFF SHIFT";
+    }
+
+    // Get weather icon
+    function getWeatherIcon(condition, hour) {
+      if (hour >= 6 && hour < 20) {
+        if (condition.includes("Clear") || condition.includes("Sunny")) return "☀️";
+        if (condition.includes("Cloud")) return "⛅";
+        if (condition.includes("Rain")) return "🌧️";
+        return "☀️";
+      } else {
+        return "🌙";
+      }
+    }
+
+    // Fetch all data
+    async function fetchData() {
+      try {
+        const [alerts, spending, system, activity, weather] = await Promise.all([
+          fetch('data/alerts.json').then(r => r.json()).catch(() => []),
+          fetch('data/spending.json').then(r => r.json()).catch(() => null),
+          fetch('data/system.json').then(r => r.json()).catch(() => null),
+          fetch('data/activity.json').then(r => r.json()).catch(() => []),
+          fetch('data/weather.json').then(r => r.json()).catch(() => null)
+        ]);
+
+        data.alerts = alerts || [];
+        data.spending = spending;
+        data.system = system;
+        data.activity = activity || [];
+        data.weather = weather;
+
+        updateUI();
+      } catch (err) {
+        console.error('Error fetching data:', err);
+      }
+    }
+
+    // Update UI
+    function updateUI() {
+      updateHeader();
+      updateAlertBanner();
+      updateProjectCards();
+      updateAlertPanel();
+      updateActivityPanel();
+      updateSpendingPanel();
+      updateSystemPanel();
+      updateFooter();
+    }
+
+    // Update header
+    function updateHeader() {
+      const now = new Date();
+      
+      // Weather
+      if (data.weather) {
+        const icon = getWeatherIcon(data.weather.condition || '', now.getHours());
+        document.getElementById('weatherIcon').textContent = icon;
+        document.getElementById('weatherTemp').textContent = `${data.weather.temp}°F`;
+      }
+
+      // Shift
+      const shift = getShiftStatus();
+      const shiftPill = document.getElementById('shiftPill');
+      document.getElementById('shiftStatus').textContent = shift;
+      shiftPill.style.display = 'flex';
+
+      // Alert badge
+      const activeAlerts = data.alerts.filter(a => !dismissedAlerts.has(a.id || a.timestamp)).length;
+      const alertBadge = document.getElementById('alertBadge');
+      if (activeAlerts > 0) {
+        alertBadge.textContent = activeAlerts;
+        alertBadge.style.display = 'flex';
+      } else {
+        alertBadge.style.display = 'none';
+      }
+    }
+
+    // Update alert banner
+    function updateAlertBanner() {
+      const banner = document.getElementById('alertBanner');
+      const activeAlerts = data.alerts.filter(a => !dismissedAlerts.has(a.id || a.timestamp));
+
+      if (activeAlerts.length === 0) {
+        banner.classList.remove('visible');
+        return;
+      }
+
+      banner.classList.add('visible');
+      banner.innerHTML = activeAlerts.map((alert, idx) => `
+        <div class="alert-item">
+          <div class="alert-time">${alert.timestamp || '—'}</div>
+          <div class="alert-message">${alert.message || alert.text || ''}</div>
+          <div class="alert-dismiss" onclick="dismissAlert('${alert.id || alert.timestamp}')">✕</div>
+        </div>
+      `).join('');
+    }
+
+    // Dismiss alert
+    function dismissAlert(id) {
+      dismissedAlerts.add(id);
+      localStorage.setItem('dismissedAlerts', JSON.stringify([...dismissedAlerts]));
+      updateAlertBanner();
+      updateHeader();
+    }
+
+    // Update project cards
+    function updateProjectCards() {
+      const grid = document.getElementById('projectsGrid');
+      grid.innerHTML = PROJECTS.map(p => {
+        const tasks = Array(p.tasks.total).fill(0).map((_, i) => i < p.tasks.done);
+        const today = new Date().getDay();
+        const todayIndex = today === 0 ? 6 : today - 1;
+
+        // Generate sparkline path
+        const sparkMin = Math.min(...p.spark);
+        const sparkMax = Math.max(...p.spark);
+        const sparkRange = sparkMax - sparkMin || 1;
+        const sparkPoints = p.spark.map((v, i) => {
+          const x = (i / (p.spark.length - 1)) * 60;
+          const y = 24 - ((v - sparkMin) / sparkRange) * 24;
+          return `${x},${y}`;
+        }).join(' ');
+
+        return `
+          <div class="project-card" style="--color: ${p.color}; color: ${p.color};">
+            <div style="position: relative; margin-bottom: 32px;">
+              <div class="card-header">
+                <div class="card-title">${p.name}</div>
+                <div class="status-badge ${p.status}">${p.status.toUpperCase()}</div>
+                <div class="last-activity">${p.lastActivity}</div>
+              </div>
+              <div class="milestone-pct">${p.milestone.pct}%</div>
+              <svg class="sparkline" viewBox="0 0 60 24" style="color: ${p.color};">
+                <polyline class="sparkline-line" points="${sparkPoints}"/>
+              </svg>
+            </div>
+
+            <div class="card-divider"></div>
+
+            <div class="focus-line" style="border-left-color: ${p.color};">
+              ${p.focus}
+            </div>
+
+            <div class="stats-row">
+              <span class="stats-label">${p.milestone.label}</span>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${p.milestone.pct}%; background-color: ${p.color};"></div>
+              </div>
+            </div>
+
+            ${p.mrr.actual > 0 ? `
+              <div class="mrr-row">
+                <div class="mrr-value">$${p.mrr.actual.toLocaleString()}</div>
+                <div class="mrr-label">${p.mrr.label}</div>
+              </div>
+            ` : ''}
+
+            <div class="task-bar" style="color: ${p.color};">
+              ${tasks.map(done => `
+                <div class="task-segment ${done ? 'done' : ''}"></div>
+              `).join('')}
+            </div>
+
+            <div class="weekly-chart" style="color: ${p.color};">
+              ${p.weekly.map((val, i) => `
+                <div class="weekly-bar ${i === todayIndex ? 'today' : ''}" style="height: ${Math.max(4, val * 3)}px;" title="${['M','T','W','T','F','S','S'][i]}"></div>
+              `).join('')}
+            </div>
+
+            <div class="next-action">${p.nextAction}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Update alert panel
+    function updateAlertPanel() {
+      const panel = document.getElementById('alertsPanel');
+      const activeAlerts = data.alerts.filter(a => !dismissedAlerts.has(a.id || a.timestamp));
+
+      if (activeAlerts.length === 0) {
+        panel.innerHTML = '<div class="nominal">All systems nominal</div>';
+      } else {
+        panel.innerHTML = `
+          <div class="alert-list">
+            ${activeAlerts.map(alert => `
+              <div class="alert-item-panel">
+                <div class="alert-item-time">${alert.timestamp || '—'}</div>
+                <div class="alert-item-text">${alert.message || alert.text || ''}</div>
+                <div class="alert-item-dismiss" onclick="dismissAlert('${alert.id || alert.timestamp}')">✕</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      document.getElementById('alertsPanelTime').textContent = formatPanelTime(new Date());
+    }
+
+    // Update activity panel
+    function updateActivityPanel() {
+      const panel = document.getElementById('activityPanel');
+
+      if (!data.activity || data.activity.length === 0) {
+        panel.innerHTML = '<div class="nominal">No recent activity</div>';
+      } else {
+        const tagColors = {
+          memory: '#5eadd4',
+          deploy: '#8b6bb1',
+          crm: '#5eadd4',
+          intel: '#c9964a',
+          system: '#888',
+          jarvis: '#8b6bb1'
         };
 
-        const PORTFOLIO = {
-            totalMRR: 3082,
-            goal: 50000,
-            stats: [
-                { label: "Active Projects", value: "2" },
-                { label: "Launching Soon", value: "3" },
-                { label: "Cron Jobs", value: "15" },
-                { label: "Guests in CRM", value: "670" }
-            ]
-        };
-
-        function getStatusColor(status) {
-            const colors = {
-                "active": "#00e5ff",
-                "launching": "#f59e0b",
-                "blocked": "#ef4444",
-                "on hold": "#6b7280"
-            };
-            return colors[status] || "#6b7280";
-        }
-
-        function createSparkline(data, color) {
-            const width = 100;
-            const height = 40;
-            const padding = 2;
-            const graphWidth = width - padding * 2;
-            const graphHeight = height - padding * 2;
-            
-            const max = Math.max(...data);
-            const step = graphWidth / (data.length - 1);
-            
-            let points = [];
-            data.forEach((value, i) => {
-                const x = padding + i * step;
-                const y = padding + graphHeight - (value / max) * graphHeight;
-                points.push(`${x},${y}`);
-            });
-            
-            const svg = `<svg width="${width}" height="${height}" style="overflow: visible;">
-                <polyline points="${points.join(' ')}" fill="none" stroke="${color}" stroke-width="1.5" opacity="0.7" />
-                <circle cx="${padding + (data.length - 1) * step}" cy="${padding + graphHeight - (data[data.length - 1] / max) * graphHeight}" r="2" fill="${color}" opacity="0.8" />
-            </svg>`;
-            return svg;
-        }
-
-        function createProgressRing(percentage) {
-            const radius = 20;
-            const circumference = 2 * Math.PI * radius;
-            const offset = circumference - (percentage / 100) * circumference;
-            
-            return `
-                <svg class="progress-ring" viewBox="0 0 50 50">
-                    <circle class="progress-ring-circle" cx="25" cy="25" r="${radius}" stroke-dasharray="${circumference}" stroke-dashoffset="${circumference}" />
-                    <circle class="progress-ring-circle active" cx="25" cy="25" r="${radius}" stroke-dasharray="${circumference}" stroke-dashoffset="${offset}" />
-                </svg>
-            `;
-        }
-
-        function renderProjectCard(project) {
-            const mrrPercent = (project.mrr.actual / project.mrr.target) * 100;
-            const mrrPercentDisplay = Math.min(100, mrrPercent).toFixed(1);
-            
-            let card = document.createElement('div');
-            card.className = 'project-card';
-            card.style.setProperty('--card-color', project.color);
-            card.style.color = project.color;
-            
-            const weekdayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-            const weekdayBars = project.weekly.map((value, i) => {
-                const isToday = i === 0;
-                const maxWeekly = Math.max(...project.weekly, 1);
-                const barHeight = maxWeekly > 0 ? (value / maxWeekly) * 24 : 2;
-                const barClass = isToday ? 'weekly-bar today' : (value > 0 ? 'weekly-bar filled' : 'weekly-bar');
-                return `
-                    <div class="weekly-day">
-                        <div class="${barClass}" style="height: ${barHeight}px;"></div>
-                        <div class="weekly-label">${weekdayLabels[i]}</div>
-                    </div>
-                `;
-            }).join('');
-
-            const taskSegments = [];
-            for (let i = 0; i < project.tasks.total; i++) {
-                const isDone = i < project.tasks.done;
-                taskSegments.push(`<div class="task-segment ${isDone ? 'done' : ''}"></div>`);
-            }
-
-            const html = `
-                <div class="card-accent"></div>
-                <div class="card-body">
-                    <div class="card-header">
-                        <div class="card-title-section">
-                            <div class="progress-ring-container">
-                                ${createProgressRing(project.milestone.pct)}
-                                <div class="progress-ring-text">${project.initial}</div>
-                            </div>
-                            <div class="title-content">
-                                <div class="title-row">
-                                    <span class="project-name">${project.name}</span>
-                                    <div class="status-badge">
-                                        <span class="status-badge-dot" style="background: ${getStatusColor(project.status)}; box-shadow: 0 0 4px ${getStatusColor(project.status)};"></span>
-                                        <span>${project.status.toUpperCase()}</span>
-                                    </div>
-                                </div>
-                                <div class="last-activity">${project.lastActivity}</div>
-                            </div>
-                        </div>
-                        <div class="sparkline-container">
-                            ${createSparkline(project.spark, project.color)}
-                        </div>
-                    </div>
-
-                    <div class="focus-text">${project.focus}</div>
-
-                    <div class="metric-row">
-                        <div class="metric-label">
-                            <span>${project.mrr.label}</span>
-                            <span class="metric-value">$${project.mrr.actual.toLocaleString()} / $${project.mrr.target.toLocaleString()}</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill gradient-fill" style="width: ${Math.min(100, mrrPercent)}%;"></div>
-                        </div>
-                        <div style="text-align: right; font-size: 0.75rem; color: #666; margin-top: 0.2rem;">${mrrPercentDisplay}%</div>
-                    </div>
-
-                    <div class="metric-row">
-                        <div class="metric-label">
-                            <span>${project.milestone.label}</span>
-                            <span class="metric-value">${project.milestone.pct}%</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" style="width: ${project.milestone.pct}%; background: currentColor; filter: drop-shadow(0 0 3px currentColor);"></div>
-                        </div>
-                    </div>
-
-                    <div class="metric-row">
-                        <div class="metric-label">
-                            <span>TASKS</span>
-                            <span class="metric-value">${project.tasks.done} / ${project.tasks.total}</span>
-                        </div>
-                        <div class="tasks-bar">
-                            ${taskSegments.join('')}
-                        </div>
-                    </div>
-
-                    <div class="metric-row">
-                        <div class="metric-label">WEEKLY ACTIVITY</div>
-                        <div class="weekly-chart">
-                            ${weekdayBars}
-                        </div>
-                    </div>
-
-                    <div class="next-action">
-                        <strong>→ ${project.nextAction}</strong>
-                    </div>
+        panel.innerHTML = `
+          <div class="activity-list">
+            ${data.activity.slice(0, 10).map((item, idx) => {
+              const opacity = 1 - (idx * 0.04);
+              return `
+                <div class="activity-item" style="opacity: ${opacity};">
+                  <div class="activity-time">${item.time || '—'}</div>
+                  <div class="activity-tag ${item.type || ''}">${(item.type || 'log').toUpperCase()}</div>
+                  <div class="activity-text">${item.text || item.message || ''}</div>
                 </div>
-            `;
-            
-            card.innerHTML = html;
-            return card;
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      document.getElementById('activityPanelTime').textContent = formatPanelTime(new Date());
+    }
+
+    // Update spending panel
+    function updateSpendingPanel() {
+      const panel = document.getElementById('spendingPanel');
+
+      if (!data.spending) {
+        panel.innerHTML = '<div class="nominal">No spending data</div>';
+      } else {
+        const monthly = data.spending.monthly_revenue || 0;
+        const nightly = Math.floor(monthly / 30);
+        const topNight = data.spending.top_night || 0;
+        const ops = data.spending.ops_cost || {};
+        const items = ops.items || [];
+        const opsCost = ops.total || 0;
+        const net = monthly - opsCost;
+
+        panel.innerHTML = `
+          <div class="spending-section">
+            <div class="spending-title">LIV REVENUE</div>
+            <div class="spending-total">$${monthly.toLocaleString()}</div>
+            <div class="spending-stat">
+              <span class="spending-stat-label">Nightly avg</span>
+              <span class="spending-stat-value">$${nightly.toLocaleString()}</span>
+            </div>
+            <div class="spending-stat">
+              <span class="spending-stat-label">Top night</span>
+              <span class="spending-stat-value">$${topNight.toLocaleString()}</span>
+            </div>
+          </div>
+
+          <div class="spending-section">
+            <div class="spending-title">COST OF OPERATIONS</div>
+            ${items.map(item => `
+              <div class="spending-item">
+                <span class="spending-item-name">${item.name}</span>
+                <span class="spending-item-amount">$${item.amount.toLocaleString()}</span>
+              </div>
+            `).join('')}
+            <div class="spending-item" style="font-weight: 700; border-top: 1px solid var(--border); margin-top: 8px; padding-top: 8px;">
+              <span class="spending-item-name">TOTAL</span>
+              <span class="spending-item-amount">$${opsCost.toLocaleString()}</span>
+            </div>
+            <div class="spending-net ${net > 0 ? 'positive' : 'negative'}">
+              <span>NET</span>
+              <span class="spending-net-amount">$${net.toLocaleString()}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('spendingPanelTime').textContent = formatPanelTime(new Date());
+    }
+
+    // Update system panel
+    function updateSystemPanel() {
+      const panel = document.getElementById('systemPanel');
+
+      if (!data.system) {
+        panel.innerHTML = '<div class="nominal">No system data</div>';
+      } else {
+        const uptime = data.system.uptime || {};
+        const api = data.system.api || {};
+        const cron = data.system.cron || {};
+        const model = data.system.model || 'Nova';
+        const memory = data.system.memory_updated || '—';
+
+        const services = [
+          { name: 'LIV CRM', status: uptime.livcrm },
+          { name: 'LIV Intel', status: uptime.livintel },
+          { name: 'n8n', status: uptime.n8n },
+          { name: 'JARVIS Voice', status: uptime.jarvis },
+          { name: 'WhatsApp', status: uptime.whatsapp },
+          { name: 'OpenClaw', status: uptime.openclaw }
+        ];
+
+        const apiUsage = api.usage_pct || 0;
+        const sonnetCost = api.sonnet_cost || 0;
+        const haikuCost = api.haiku_cost || 0;
+        const totalCost = sonnetCost + haikuCost;
+
+        panel.innerHTML = `
+          <div class="system-section">
+            ${services.map(s => `
+              <div class="uptime-row">
+                <div class="uptime-service">${s.name}</div>
+                <div class="status-dot ${s.status === true ? 'up' : 'down'}"></div>
+              </div>
+            `).join('')}
+          </div>
+
+          <div class="system-section">
+            <div class="api-usage-label">API Usage: ${apiUsage}%</div>
+            <div class="api-usage-bar">
+              <div class="api-usage-fill ${apiUsage > 80 ? 'high' : ''}" style="width: ${apiUsage}%;"></div>
+            </div>
+            <div class="api-cost-items">
+              <div>Sonnet $${sonnetCost.toFixed(2)} · Haiku $${haikuCost.toFixed(2)} · Total $${totalCost.toFixed(2)}</div>
+            </div>
+          </div>
+
+          <div class="system-section">
+            <div class="cron-info">${cron.active || 0} jobs active · Next: ${cron.next || '—'}</div>
+            <div class="model-pill">${model}</div>
+            <div class="memory-info">Memory updated: ${memory}</div>
+          </div>
+        `;
+      }
+
+      document.getElementById('systemPanelTime').textContent = formatPanelTime(new Date());
+    }
+
+    // Update footer
+    function updateFooter() {
+      document.getElementById('lastSync').textContent = formatPanelTime(new Date());
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', e => {
+      if (e.key === 'r' || e.key === 'R') {
+        fetchData();
+      } else if (e.key >= '1' && e.key <= '5') {
+        const idx = parseInt(e.key) - 1;
+        const cards = document.querySelectorAll('.project-card');
+        if (cards[idx]) {
+          cards[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+      } else if (e.key === 'a' || e.key === 'A') {
+        document.querySelector('.panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
 
-        function renderActivityLog() {
-            const container = document.getElementById('activityLog');
-            container.innerHTML = ACTIVITY_LOG.map(item => `
-                <div class="activity-item ${item.type}">
-                    <div class="activity-time">${item.time}</div>
-                    <div class="activity-content">
-                        <span class="activity-label">${item.label}</span>
-                        <span class="activity-text"> ${item.text}</span>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderPortfolioStats() {
-            const container = document.getElementById('portfolioStats');
-            container.innerHTML = PORTFOLIO.stats.map(stat => `
-                <div class="stat-item">
-                    <div class="stat-label">${stat.label}</div>
-                    <div class="stat-value">${stat.value}</div>
-                </div>
-            `).join('');
-        }
-
-        function updateShiftStatus() {
-            const now = new Date();
-            const hour = now.getHours();
-            
-            let shiftLabel = 'Off Shift';
-            let shiftClass = 'off';
-            
-            if (hour >= 12 && hour < 20) {
-                shiftLabel = 'Pre-Shift';
-                shiftClass = 'pre';
-            } else if (hour >= 20 || hour < 4) {
-                shiftLabel = 'At Work';
-                shiftClass = 'at';
-            }
-            
-            document.getElementById('shiftStatus').textContent = shiftLabel;
-            document.getElementById('shiftStatusFull').textContent = shiftLabel;
-            document.getElementById('shiftStatusFull').className = `shift-indicator ${shiftClass}`;
-        }
-
-        function init() {
-            // Render projects
-            const grid = document.getElementById('projectsGrid');
-            PROJECTS.forEach((project, index) => {
-                const card = renderProjectCard(project);
-                card.style.animationDelay = `${0.1 + index * 0.1}s`;
-                grid.appendChild(card);
-            });
-
-            // Render activity log
-            renderActivityLog();
-
-            // Render portfolio stats
-            renderPortfolioStats();
-
-            // Update shift status
-            updateShiftStatus();
-
-            // Update API usage bar color
-            const apiUsagePercent = (SYSTEM.apiUsage.used / SYSTEM.apiUsage.limit) * 100;
-            const apiFill = document.getElementById('apiUsageFill');
-            if (apiUsagePercent >= 80) {
-                apiFill.classList.add('warning');
-            }
-            if (apiUsagePercent >= 100) {
-                apiFill.classList.add('critical');
-            }
-            apiFill.style.width = `${Math.min(100, apiUsagePercent)}%`;
-        }
-
-        // Initialize on load
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
-
-        // Update shift status every minute
-        setInterval(updateShiftStatus, 60000);
-    </script>
+    // Initial load and poll
+    fetchData();
+    setInterval(fetchData, 60000);
+  </script>
 </body>
 </html>

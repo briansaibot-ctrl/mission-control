@@ -1,0 +1,13 @@
+{
+  "updated": "2026-04-13T19:13:00-07:00",
+  "items": [
+    { "time": "7:02 PM", "type": "memory", "label": "NOVA", "text": "Memory flush — session logged to 2026-04-13.md" },
+    { "time": "6:51 PM", "type": "deploy", "label": "MISSION CTRL", "text": "Dashboard deployed to GitHub Pages" },
+    { "time": "5:53 PM", "type": "jarvis", "label": "JARVIS", "text": "Flash model + Haiku active — 2.7s total response time" },
+    { "time": "4:44 PM", "type": "crm", "label": "LIV CRM", "text": "Lifetime spend fix — 670 guests, $3.08M verified" },
+    { "time": "4:20 PM", "type": "system", "label": "NOVA", "text": "Gmail hook dedup fixed — billing emails silenced" },
+    { "time": "3:00 PM", "type": "intel", "label": "LIV INTEL", "text": "PWA v18 deployed to GitHub Pages" },
+    { "time": "11:00 AM", "type": "intel", "label": "LIV INTEL", "text": "Monday trend digest sent to WhatsApp" },
+    { "time": "9:00 AM", "type": "system", "label": "NOVA", "text": "Morning email check — 20 unread, routine" }
+  ]
+}
