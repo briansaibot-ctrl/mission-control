@@ -1,7 +1,7 @@
 {
-  "updated": "2026-04-14T16:20:10-07:00",
+  "updated": "2026-04-14T16:35:08-07:00",
   "location": "Las Vegas, NV",
-  "temp_f": 85,
-  "condition": "Clear",
+  "temp_f": 60,
+  "condition": "Sunny",
   "icon": "auto"
 }
