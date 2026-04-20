@@ -1,0 +1,41 @@
+{
+  "updated": "2026-04-20T00:24:45.310Z",
+  "services": {
+    "anthropic": {
+      "daily": 0,
+      "monthly": 0,
+      "limit": 50,
+      "source": "api"
+    },
+    "elevenLabs": {
+      "daily": 0,
+      "monthly": 5,
+      "limit": 10,
+      "source": "email"
+    },
+    "googleWorkspace": {
+      "daily": 0,
+      "monthly": 6,
+      "limit": 6,
+      "source": "email"
+    },
+    "stripe": {
+      "daily": 0,
+      "monthly": 0,
+      "limit": 100,
+      "source": "api"
+    },
+    "other": {
+      "daily": 0,
+      "monthly": 0,
+      "limit": 0,
+      "source": "manual"
+    }
+  },
+  "totals": {
+    "daily": 0,
+    "monthly": 11,
+    "monthlyProjected": 17.37
+  },
+  "lastUpdate": "2026-04-20T00:24:44.482Z"
+}

@@ -1,19 +1,19 @@
 {
-  "updated": "2026-04-20T00:12:54-07:00",
+  "updated": "2026-04-20T00:24:58-07:00",
   "whatsapp": true,
   "gmail": true,
-  "jarvis_voice": false,
-  "cron_jobs": 15,
+  "jarvis_voice": true,
+  "cron_jobs": 19,
   "next_cron": "next run",
-  "nova_model": "claude-sonnet-4-6",
-  "memory_updated": "Apr 19, 05:12 PM",
+  "nova_model": "claude-haiku-4-5-20251001",
+  "memory_updated": "Apr 19, 05:24 PM",
   "api_usage": { "used": 42, "limit": 100 },
-  "api_cost": {"sonnet": 0, "haiku": 0, "opus": 0, "total": 0, "source": "offline"},
+  "api_cost": {"daily": 0, "monthly": 11, "projected": 17.37, "source": "tracker"},
   "uptime": {
     "liv_crm": true,
     "liv_intel": true,
     "n8n": true,
-    "jarvis_voice": false,
+    "jarvis_voice": true,
     "whatsapp_bridge": true,
     "openclaw": true
   }
