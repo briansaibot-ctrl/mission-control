@@ -1,11 +1,12 @@
 {
-  "updated": "2026-04-20T07:00:13.984Z",
+  "updated": "2026-04-20T09:17:09.773Z",
   "services": {
     "anthropic": {
       "daily": 0,
-      "monthly": 0,
+      "monthly": 312.62,
       "limit": 50,
-      "source": "api"
+      "source": "email",
+      "found": "2026-04-20"
     },
     "elevenLabs": {
       "daily": 0,
@@ -34,8 +35,8 @@
   },
   "totals": {
     "daily": 0,
-    "monthly": 11,
-    "monthlyProjected": 16.5
+    "monthly": 323.62,
+    "monthlyProjected": 485.43
   },
   "lastUpdate": "2026-04-20T00:24:44.482Z"
 }
