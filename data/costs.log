@@ -10,3 +10,7 @@
 [2026-04-20T01:00:12.025Z] ⚠️ ANTHROPIC_API_KEY not set, skipping Anthropic usage
 [2026-04-20T01:00:12.841Z] ⚠️ Gmail query failed: emails is not iterable
 [2026-04-20T01:00:12.844Z] ✅ Update complete: $0/day, $11/month, $17.37 projected
+[2026-04-20T07:00:12.880Z] 🔄 Cost Tracker starting...
+[2026-04-20T07:00:12.881Z] ⚠️ ANTHROPIC_API_KEY not set, skipping Anthropic usage
+[2026-04-20T07:00:13.982Z] ⚠️ Gmail query failed: emails is not iterable
+[2026-04-20T07:00:13.985Z] ✅ Update complete: $0/day, $11/month, $16.5 projected
