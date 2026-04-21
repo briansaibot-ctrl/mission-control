@@ -1,8 +1,8 @@
 {
-  "updated": "2026-04-21T08:01:46-07:00",
+  "updated": "2026-04-21T08:01:54-07:00",
   "whatsapp": true,
   "gmail": true,
-  "jarvis_voice": true,
+  "jarvis_voice": false,
   "cron_jobs": 19,
   "next_cron": "next run",
   "nova_model": "claude-haiku-4-5-20251001",
@@ -13,7 +13,7 @@
     "liv_crm": true,
     "liv_intel": true,
     "n8n": true,
-    "jarvis_voice": true,
+    "jarvis_voice": false,
     "whatsapp_bridge": true,
     "openclaw": true
   }
