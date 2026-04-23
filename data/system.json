@@ -1,19 +1,19 @@
 {
-  "updated": "2026-04-23T13:43:36-07:00",
+  "updated": "2026-04-23T13:58:35-07:00",
   "whatsapp": true,
   "gmail": true,
-  "jarvis_voice": false,
+  "jarvis_voice": true,
   "cron_jobs": 19,
   "next_cron": "next run",
   "nova_model": "claude-haiku-4-5-20251001",
-  "memory_updated": "Apr 23, 06:43 AM",
+  "memory_updated": "Apr 23, 06:58 AM",
   "api_usage": { "used": 42, "limit": 100 },
   "api_cost": {"daily": 0, "monthly": 323.68, "projected": 422.19, "source": "tracker"},
   "uptime": {
     "liv_crm": true,
     "liv_intel": true,
     "n8n": true,
-    "jarvis_voice": false,
+    "jarvis_voice": true,
     "whatsapp_bridge": true,
     "openclaw": true
   }
