@@ -1,12 +1,12 @@
 {
-  "updated": "2026-05-15T17:29:58-07:00",
+  "updated": "2026-05-15T17:44:55-07:00",
   "whatsapp": true,
   "gmail": true,
   "jarvis_voice": false,
   "cron_jobs": 21,
   "next_cron": "next run",
   "nova_model": "claude-haiku-4-5-20251001",
-  "memory_updated": "May 15, 10:29 AM",
+  "memory_updated": "May 15, 10:44 AM",
   "api_usage": { "used": 42, "limit": 100 },
   "api_cost": {"daily": 0, "monthly": 241.03, "projected": 482.06, "source": "tracker"},
   "uptime": {
