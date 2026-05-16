@@ -1,5 +1,5 @@
 {
-  "updated": "2026-05-16T01:00:15.515Z",
+  "updated": "2026-05-16T07:00:14.314Z",
   "services": {
     "anthropic": {
       "daily": 0,
@@ -36,7 +36,7 @@
   "totals": {
     "daily": 0,
     "monthly": 241.03,
-    "monthlyProjected": 482.06
+    "monthlyProjected": 451.93
   },
   "lastUpdate": "2026-04-20T00:24:44.482Z"
 }
