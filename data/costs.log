@@ -710,3 +710,8 @@
 [2026-05-26T19:00:05.646Z] ✓ Anthropic total this month: $250.04 (cached)
 [2026-05-26T19:00:07.756Z] ✓ ElevenLabs: 0 / 1,000,000 chars (0.0%)
 [2026-05-26T19:00:07.758Z] ✅ Update complete: $0/day, $261.04/month, $301.2 projected
+[2026-05-27T01:00:05.750Z] 🔄 Cost Tracker starting...
+[2026-05-27T01:00:06.662Z] ℹ️ Anthropic: checking last hour for new receipts...
+[2026-05-27T01:00:06.663Z] ✓ Anthropic total this month: $250.04 (cached)
+[2026-05-27T01:00:08.773Z] ✓ ElevenLabs: 0 / 1,000,000 chars (0.0%)
+[2026-05-27T01:00:08.775Z] ✅ Update complete: $0/day, $261.04/month, $301.2 projected
