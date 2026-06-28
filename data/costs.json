@@ -1,9 +1,9 @@
 {
-  "updated": "2026-06-28T13:00:10.783Z",
+  "updated": "2026-06-28T19:00:17.873Z",
   "services": {
     "anthropic": {
       "daily": 0,
-      "monthly": 500.13999999999993,
+      "monthly": 510.1499999999999,
       "limit": 50,
       "source": "email",
       "found": "2026-04-20"
@@ -35,8 +35,8 @@
   },
   "totals": {
     "daily": 0,
-    "monthly": 511.14,
-    "monthlyProjected": 547.65
+    "monthly": 521.15,
+    "monthlyProjected": 558.38
   },
   "lastUpdate": "2026-04-20T00:24:44.482Z"
 }
